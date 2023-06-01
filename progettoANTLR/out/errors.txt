@@ -1,0 +1,1 @@
+Errore01: Linea 1, carattere numero 1 -> $
