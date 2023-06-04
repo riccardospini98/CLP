@@ -1,9 +1,2 @@
-int x;
-bool y;
-
-if (x > 0) {
-    y = false;
-} else {
-    x = y + 1;
-}
-int z;
+int x ;
+x = 1 ;

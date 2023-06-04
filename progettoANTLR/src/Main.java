@@ -26,48 +26,64 @@ public class Main {
         antlr.SimpLanPlusParser parser = new antlr.SimpLanPlusParser(tokens);
 
         List<String> parserErrors = new ArrayList<>();
+        CustomErrorListener errorListener = new CustomErrorListener(parserErrors);
+        parser.addErrorListener(errorListener);
 
         // Creazione della tabella dei simboli
         SymbolTable symbolTable = new SymbolTable();
 
         // Aggiungi un listener personalizzato per l'analisi dell'albero del parser
-        ParseTreeListener listener = new CustomListener(symbolTable, parserErrors);
+        ParseTreeListener listener = new CustomListener(symbolTable);
 
         ParseTreeWalker walker = new ParseTreeWalker();
 
 
         // Esegui l'analisi del programma
         ParseTree parseTree = parser.prog();
-        walker.walk(listener, parseTree);
 
-        // Verifica degli identificatori non dichiarati
-        List<String> undeclaredIdentifiers = symbolTable.getUndeclaredIdentifiers();
-        if (!undeclaredIdentifiers.isEmpty()) {
-            System.out.println("Error: Identificatori non dichiarati:");
-            for (String identifier : undeclaredIdentifiers) {
+        if (!parserErrors.isEmpty()) {
+            System.out.println("Error: Ci sono errori di sintassi nel programma.");
+        }
+        else {
+            // Continua con l'analisi dell'albero
+            walker.walk(listener, parseTree);
+
+            // Verifica degli identificatori non dichiarati
+            List<String> undeclaredIdentifiers = symbolTable.getUndeclaredIdentifiers();
+            if (!undeclaredIdentifiers.isEmpty()) {
+                for (String identifier : undeclaredIdentifiers) {
+                    parserErrors.add("Errore - Identificatore non dichiarato: " + identifier);
+                }
+            }
+
+            // Verifica degli identificatori duplicati
+            List<String> duplicateIdentifiers = symbolTable.getDuplicateIdentifiers();
+            if (!duplicateIdentifiers.isEmpty()) {
+                System.out.println("Error: Identificatori dichiarati più volte nello stesso ambiente:");
+                for (String identifier : duplicateIdentifiers) {
+                    System.out.println(identifier);
+                }
+            }
+
+            // Visualizzazione della tabella dei simboli
+            System.out.println("Identificatori dichiarati:");
+            for (String identifier : symbolTable.getIdentifiers()) {
                 System.out.println(identifier);
             }
-        }
 
-        // Verifica degli identificatori duplicati
-        List<String> duplicateIdentifiers = symbolTable.getDuplicateIdentifiers();
-        if (!duplicateIdentifiers.isEmpty()) {
-            System.out.println("Error: Identificatori dichiarati più volte nello stesso ambiente:");
-            for (String identifier : duplicateIdentifiers) {
+            System.out.println("Identificatori referenziati:");
+            for (String identifier : symbolTable.getReferences()) {
                 System.out.println(identifier);
             }
+
+            System.out.println("Identificatori non dichiarati:");
+            for (String identifier : symbolTable.getUndeclaredIdentifiers()) {
+                System.out.println(identifier);
+            }
+
         }
 
-        // Visualizzazione della tabella dei simboli
-        System.out.println("Identificatori dichiarati:");
-        for (String identifier : symbolTable.getIdentifiers()) {
-            System.out.println(identifier);
-        }
 
-        System.out.println("Identificatori referenziati:");
-        for (String identifier : symbolTable.getReferences()) {
-            System.out.println(identifier);
-        }
 
         if (!parserErrors.isEmpty()) {
             File f = new File(OUTPUT_PATH);
@@ -81,7 +97,6 @@ public class Main {
             System.out.println("Parser errors: " + parserErrors.size());
 
             for (String error : parserErrors) {
-                System.out.println("Writing in file " + error);
                 Files.write(Paths.get(OUTPUT_PATH), (error + "\n").getBytes(), StandardOpenOption.APPEND);
             }
         } else {
@@ -91,4 +106,5 @@ public class Main {
 
 
     }
+
 }

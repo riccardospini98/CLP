@@ -19,11 +19,15 @@ class SymbolTable {
     }
 
     public void addReference(String identifier) {
-        references.add(identifier);
+        if(!references.contains(identifier)) {
+            references.add(identifier);
+        }
     }
 
     public void addUndeclaredIdentifier(String identifier) {
-        undeclaredIdentifiers.add(identifier);
+        if(!undeclaredIdentifiers.contains(identifier)) {
+            undeclaredIdentifiers.add(identifier);
+        }
     }
 
     public void addDuplicateIdentifier(String identifier) {
@@ -39,13 +43,8 @@ class SymbolTable {
     }
 
     public List<String> getUndeclaredIdentifiers() {
-        List<String> result = new ArrayList<>();
-        for (String identifier : references) {
-            if (!identifiers.contains(identifier)) {
-                result.add(identifier);
-            }
-        }
-        return result;
+
+        return undeclaredIdentifiers;
     }
 
     public List<String> getDuplicateIdentifiers() {

@@ -23,7 +23,7 @@ stm    : ID '=' exp ';'
        | 'if' '(' exp ')' '{' (stm)+ '}' ('else' '{' (stm)+ '}')?
 	   ;
 
-exp    :  INTEGER | 'true' | 'false'
+exp    : INTEGER | 'true' | 'false'
        | ID
        | '!' exp
        | exp ('*' | '/') exp

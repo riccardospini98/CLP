@@ -10,33 +10,18 @@ import java.util.Map;
 
 class CustomListener extends SimpLanPlusBaseListener {
     private SymbolTable symbolTable;
-    private List<String> parserErrors;
     private Map<String, Integer> declarationCount;
 
-    public CustomListener(SymbolTable symbolTable, List<String> parserErrors) {
+    public CustomListener(SymbolTable symbolTable) {
         this.symbolTable = symbolTable;
-        this.parserErrors = parserErrors;
         this.declarationCount = new HashMap<>();
     }
 
     @Override
     public void enterDec(SimpLanPlusParser.DecContext ctx) {
         System.out.println("Declaration: " + ctx.getText());
-        if (ctx.exception != null) {
-            Token token = ctx.getStart();
-            String errorMessage = "Syntax error at line " + token.getLine() + ":" + token.getCharPositionInLine() + " " + ctx.exception.getMessage();
-            parserErrors.add(errorMessage);
-        }
 
-        else if (ctx.type() == null || ctx.ID() == null) {
-            // Errore di sintassi nella dichiarazione
-            Token token = ctx.getStart();
-            String errorMessage = "Syntax error at line " + token.getLine() + ":" + token.getCharPositionInLine() + " Incomplete or invalid declaration";
-            parserErrors.add(errorMessage);
-
-        }
-        else {
-
+        if (!(ctx.type() == null || ctx.ID() == null || ctx.exception != null)) {
             String identifier = ctx.ID().getText();
 
             if (declarationCount.containsKey(identifier)) {
@@ -49,7 +34,6 @@ class CustomListener extends SimpLanPlusBaseListener {
         }
     }
 
-
     @Override
     public void exitExp(SimpLanPlusParser.ExpContext ctx) {
         if (ctx.ID() != null) {
@@ -59,10 +43,18 @@ class CustomListener extends SimpLanPlusBaseListener {
     }
 
     @Override
-    public void visitErrorNode(ErrorNode node) {
-        Token token = node.getSymbol();
-        String errorMessage = "Syntax error at line " + token.getLine() + ":" + token.getCharPositionInLine() + " " + node.toString();
-        parserErrors.add(errorMessage);
+    public void enterStm(SimpLanPlusParser.StmContext ctx) {
+        if(ctx.ID() != null  && !symbolTable.getIdentifiers().contains(ctx.ID().getText())) {
+            System.out.println("Undeclared accessed " + ctx.ID().getText());
+            symbolTable.addUndeclaredIdentifier(ctx.ID().getText());
+        }
+    }
+
+    @Override
+    public void enterExp(SimpLanPlusParser.ExpContext ctx) {
+        if(ctx.ID() != null  && !symbolTable.getIdentifiers().contains(ctx.ID().getText())) {
+            symbolTable.addUndeclaredIdentifier(ctx.ID().getText());
+        }
     }
 }
 
