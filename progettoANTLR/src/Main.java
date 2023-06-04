@@ -9,38 +9,54 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Main {
-    public static void main(String[] args) throws IOException{
-        String input = new String(Files.readAllBytes(Paths.get( "src/input.txt")));
 
-        //Esercizio1
+public class Main {
+
+    static String INPUT_PATH = "progettoANTLR/src/input.txt";
+    static String OUTPUT_PATH = "progettoANTLR/out/errors.txt";
+    public static void main(String[] args) throws IOException{
+        String input = new String(Files.readAllBytes(Paths.get(INPUT_PATH).toAbsolutePath()));
+
+        //Esercizio 1
         CharStream stream = CharStreams.fromString(input);
         antlr.SimpLanPlusLexer lexer = new antlr.SimpLanPlusLexer(stream);
-        List<Token> lexerErrors = new ArrayList<>();
-        Token token = lexer.nextToken();
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+        antlr.SimpLanPlusParser parser = new antlr.SimpLanPlusParser(tokens);
+        parser.removeErrorListeners(); // Remove the default error listeners
+        List<String> parserErrors = new ArrayList<>();
 
-        while(token.getType() != SimpLanPlusLexer.EOF){
-
-            if (token.getType() == SimpLanPlusLexer.ERR){
-                lexerErrors.add(token);
+        // Custom error listener to collect parser errors
+        parser.addErrorListener(new BaseErrorListener() {
+            @Override
+            public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
+                parserErrors.add("Errore: Linea " + line + ", carattere numero " + charPositionInLine + " -> " + msg);
             }
-            token= lexer.nextToken();
-        }
+        });
 
-        File f= new File("out/errors.txt");
-        if(!f.exists()){
-            f.createNewFile();
+        // Start parsing from the 'prog' rule
+        antlr.SimpLanPlusParser.ProgContext prog = parser.prog();
+
+        if (!parserErrors.isEmpty()) {
+            File f = new File(OUTPUT_PATH);
+            if (!f.exists()) {
+                f.createNewFile();
+            } else {
+                f.delete();
+                f.createNewFile();
+            }
+
+            System.out.println("Parser errors: " + parserErrors.size());
+
+            for (String error : parserErrors) {
+                System.out.println("Writing in file " + error);
+                Files.write(Paths.get(OUTPUT_PATH), (error + "\n").getBytes(), StandardOpenOption.APPEND);
+            }
         } else {
-            f.delete();
-            f.createNewFile();
+            Files.deleteIfExists(Paths.get(OUTPUT_PATH));
+            Files.write(Paths.get(OUTPUT_PATH), ("").getBytes(), StandardOpenOption.CREATE_NEW);
         }
 
-        for (int i =0; i<lexerErrors.size(); i++){
-            int errLine = lexerErrors.get(i).getLine();
-            String errStr = lexerErrors.get(i).getText();
-            int errPos = lexerErrors.get(i).getCharPositionInLine() +1;
-            String toWrite = "Errore"+i+1+": Linea "+errLine+", carattere numero "+errPos+" -> "+errStr+"\n";
-            Files.write(Paths.get("out/errors.txt"), toWrite.getBytes(), StandardOpenOption.APPEND);
-        }
+        //Esercizio 2
+
     }
 }
