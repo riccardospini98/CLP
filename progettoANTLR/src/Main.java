@@ -1,5 +1,8 @@
 import antlr.SimpLanPlusLexer;
 import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTreeListener;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,24 +20,54 @@ public class Main {
     public static void main(String[] args) throws IOException{
         String input = new String(Files.readAllBytes(Paths.get(INPUT_PATH).toAbsolutePath()));
 
-        //Esercizio 1
         CharStream stream = CharStreams.fromString(input);
         antlr.SimpLanPlusLexer lexer = new antlr.SimpLanPlusLexer(stream);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         antlr.SimpLanPlusParser parser = new antlr.SimpLanPlusParser(tokens);
-        parser.removeErrorListeners(); // Remove the default error listeners
+
         List<String> parserErrors = new ArrayList<>();
 
-        // Custom error listener to collect parser errors
-        parser.addErrorListener(new BaseErrorListener() {
-            @Override
-            public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
-                parserErrors.add("Errore: Linea " + line + ", carattere numero " + charPositionInLine + " -> " + msg);
-            }
-        });
+        // Creazione della tabella dei simboli
+        SymbolTable symbolTable = new SymbolTable();
 
-        // Start parsing from the 'prog' rule
-        antlr.SimpLanPlusParser.ProgContext prog = parser.prog();
+        // Aggiungi un listener personalizzato per l'analisi dell'albero del parser
+        ParseTreeListener listener = new CustomListener(symbolTable, parserErrors);
+
+        ParseTreeWalker walker = new ParseTreeWalker();
+
+
+        // Esegui l'analisi del programma
+        ParseTree parseTree = parser.prog();
+        walker.walk(listener, parseTree);
+
+        // Verifica degli identificatori non dichiarati
+        List<String> undeclaredIdentifiers = symbolTable.getUndeclaredIdentifiers();
+        if (!undeclaredIdentifiers.isEmpty()) {
+            System.out.println("Error: Identificatori non dichiarati:");
+            for (String identifier : undeclaredIdentifiers) {
+                System.out.println(identifier);
+            }
+        }
+
+        // Verifica degli identificatori duplicati
+        List<String> duplicateIdentifiers = symbolTable.getDuplicateIdentifiers();
+        if (!duplicateIdentifiers.isEmpty()) {
+            System.out.println("Error: Identificatori dichiarati più volte nello stesso ambiente:");
+            for (String identifier : duplicateIdentifiers) {
+                System.out.println(identifier);
+            }
+        }
+
+        // Visualizzazione della tabella dei simboli
+        System.out.println("Identificatori dichiarati:");
+        for (String identifier : symbolTable.getIdentifiers()) {
+            System.out.println(identifier);
+        }
+
+        System.out.println("Identificatori referenziati:");
+        for (String identifier : symbolTable.getReferences()) {
+            System.out.println(identifier);
+        }
 
         if (!parserErrors.isEmpty()) {
             File f = new File(OUTPUT_PATH);
@@ -56,7 +89,6 @@ public class Main {
             Files.write(Paths.get(OUTPUT_PATH), ("").getBytes(), StandardOpenOption.CREATE_NEW);
         }
 
-        //Esercizio 2
 
     }
 }
