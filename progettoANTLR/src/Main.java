@@ -41,46 +41,33 @@ public class Main {
         // Esegui l'analisi del programma
         ParseTree parseTree = parser.prog();
 
+        //Errori di sintassi
         if (!parserErrors.isEmpty()) {
             System.out.println("Error: Ci sono errori di sintassi nel programma.");
         }
+
+        //Errori semantici sugli identificatori
         else {
             // Continua con l'analisi dell'albero
             walker.walk(listener, parseTree);
 
             // Verifica degli identificatori non dichiarati
-            List<String> undeclaredIdentifiers = symbolTable.getUndeclaredIdentifiers();
+            List<Symbol> undeclaredIdentifiers = symbolTable.getUndeclaredIdentifiers();
             if (!undeclaredIdentifiers.isEmpty()) {
-                for (String identifier : undeclaredIdentifiers) {
+                for (Symbol identifier : undeclaredIdentifiers) {
                     parserErrors.add("Errore - Identificatore non dichiarato: " + identifier);
                 }
             }
 
             // Verifica degli identificatori duplicati
-            List<String> duplicateIdentifiers = symbolTable.getDuplicateIdentifiers();
+            List<Symbol> duplicateIdentifiers = symbolTable.getDuplicateIdentifiers();
             if (!duplicateIdentifiers.isEmpty()) {
-                System.out.println("Error: Identificatori dichiarati più volte nello stesso ambiente:");
-                for (String identifier : duplicateIdentifiers) {
-                    System.out.println(identifier);
+                for (Symbol identifier : duplicateIdentifiers) {
+                    parserErrors.add("Error - Identificatore dichiarati più volte nello stesso ambiente:" + identifier);
                 }
             }
 
-            // Visualizzazione della tabella dei simboli
-            System.out.println("Identificatori dichiarati:");
-            for (String identifier : symbolTable.getIdentifiers()) {
-                System.out.println(identifier);
-            }
-
-            System.out.println("Identificatori referenziati:");
-            for (String identifier : symbolTable.getReferences()) {
-                System.out.println(identifier);
-            }
-
-            System.out.println("Identificatori non dichiarati:");
-            for (String identifier : symbolTable.getUndeclaredIdentifiers()) {
-                System.out.println(identifier);
-            }
-
+            printSymbolTable(symbolTable);
         }
 
 
@@ -107,4 +94,30 @@ public class Main {
 
     }
 
+    private static void printSymbolTable(SymbolTable symbolTable){
+        // Visualizzazione della tabella dei simboli
+        //Simboli dichiarati
+        System.out.println("Identificatori dichiarati:");
+        for (Symbol identifier : symbolTable.getIdentifiers()) {
+            System.out.println(identifier.toString());
+        }
+
+        //Simboli referenziati
+        System.out.println("Identificatori referenziati:");
+        for (Symbol identifier : symbolTable.getReferences()) {
+            System.out.println(identifier.toString());
+        }
+
+        //Simboli non dichiarati
+        System.out.println("Identificatori non dichiarati:");
+        for (Symbol identifier : symbolTable.getUndeclaredIdentifiers()) {
+            System.out.println(identifier.toString());
+        }
+
+        //Simboli duplicati
+        System.out.println("Identificatori duplicati:");
+        for (Symbol identifier : symbolTable.getDuplicateIdentifiers()) {
+            System.out.println(identifier.toString());
+        }
+    }
 }

@@ -13,7 +13,10 @@ public class CustomErrorListener extends BaseErrorListener {
 
     @Override
     public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String message, RecognitionException e) {
-        String errorMessage = "Syntax error at line " + line + ":" + charPositionInLine + " " + message;
+        String errorMessage = "Errore di sintassi riga" + line + ":" + charPositionInLine + " " + message;
+
+        //Basandosi sul param message possiamo decidere che messaggi stampare nel file per ogni caso specifico.
         parserErrors.add(errorMessage);
     }
+
 }

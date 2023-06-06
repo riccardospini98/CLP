@@ -1,11 +1,12 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 class SymbolTable {
-    private final List<String> identifiers;
-    private final List<String> references;
-    private final List<String> undeclaredIdentifiers;
-    private final List<String> duplicateIdentifiers;
+    private final List<Symbol> identifiers;
+    private final List<Symbol> references;
+    private final List<Symbol> undeclaredIdentifiers;
+    private final List<Symbol> duplicateIdentifiers;
 
     public SymbolTable() {
         this.identifiers = new ArrayList<>();
@@ -14,40 +15,49 @@ class SymbolTable {
         this.duplicateIdentifiers = new ArrayList<>();
     }
 
-    public void addIdentifier(String identifier) {
+    public void addIdentifier(Symbol identifier) {
         identifiers.add(identifier);
     }
 
-    public void addReference(String identifier) {
+    public void addReference(Symbol identifier) {
         if(!references.contains(identifier)) {
             references.add(identifier);
         }
     }
 
-    public void addUndeclaredIdentifier(String identifier) {
+    public void addUndeclaredIdentifier(Symbol identifier) {
         if(!undeclaredIdentifiers.contains(identifier)) {
             undeclaredIdentifiers.add(identifier);
         }
     }
 
-    public void addDuplicateIdentifier(String identifier) {
+    public void addDuplicateIdentifier(Symbol identifier) {
         duplicateIdentifiers.add(identifier);
     }
 
-    public List<String> getIdentifiers() {
+    public List<Symbol> getIdentifiers() {
         return identifiers;
     }
 
-    public List<String> getReferences() {
+    public boolean isDeclared(Symbol symbol) {
+        for (Symbol i: identifiers) {
+            if (symbol.getName().equals(i.getName()) &&
+                symbol.getNestingLvl().equals(i.getNestingLvl())) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public List<Symbol> getReferences() {
         return references;
     }
 
-    public List<String> getUndeclaredIdentifiers() {
+    public List<Symbol> getUndeclaredIdentifiers() {
 
         return undeclaredIdentifiers;
     }
 
-    public List<String> getDuplicateIdentifiers() {
+    public List<Symbol> getDuplicateIdentifiers() {
         return duplicateIdentifiers;
     }
 }
