@@ -2,6 +2,10 @@ import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOError;
+import java.io.IOException;
 import java.util.List;
 
 public class CustomErrorListener extends BaseErrorListener {
@@ -17,6 +21,20 @@ public class CustomErrorListener extends BaseErrorListener {
 
         //Basandosi sul param message possiamo decidere che messaggi stampare nel file per ogni caso specifico.
         parserErrors.add(errorMessage);
+    }
+
+    public void writeOnFile(String path) {
+        String errors = "";
+        for (String error: this.parserErrors) {
+            errors += error + '\n';
+        }
+        try {
+            BufferedWriter wr = new BufferedWriter(new FileWriter(path));
+            wr.write(errors);
+            wr.close();
+        } catch (IOException e) {
+
+        }
     }
 
 }

@@ -1,7 +1,7 @@
 grammar SimpLanPlus ;
 
-prog   : exp #singleExpProg
-       | (dec)+ (stm)* (exp)? #regularProg
+prog   : exp EOF #singleExpProg
+       | (dec)+ (stm)* (exp)? EOF #regularProg
        ;
 
 dec    : type ID ';' #varDec

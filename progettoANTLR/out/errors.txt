@@ -1,3 +1,1 @@
-Errore - Identificatore non dichiarato: * x - nesting level: 0
-Error - Identificatore dichiarati più volte nello stesso ambiente:bool x - nesting level: 1
-Error - Identificatore dichiarati più volte nello stesso ambiente:bool z - nesting level: 1
+Errore di sintassi riga1:1 mismatched input '<EOF>' expecting {'(', 'int', 'bool', 'void', 'if', 'true', 'false', '!', INTEGER, ID}

@@ -1,8 +1,10 @@
-import antlr.SimpLanPlusLexer;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import parser.SimpLanPlusLexer;
+import parser.SimpLanPlusParser;
+import semanticanalysis.SemanticError;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,47 +14,48 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 
+import ast.Node;
 
 public class Main {
 
-    static String INPUT_PATH = "progettoANTLR/src/input.txt";
+    static String INPUT_PATH = "progettoANTLR/src/input.simplanplus";
     static String OUTPUT_PATH = "progettoANTLR/out/errors.txt";
-    public static void main(String[] args) throws IOException{
+
+    public static void main(String[] args) throws IOException {
         String input = new String(Files.readAllBytes(Paths.get(INPUT_PATH).toAbsolutePath()));
 
         CharStream stream = CharStreams.fromString(input);
-        antlr.SimpLanPlusLexer lexer = new antlr.SimpLanPlusLexer(stream);
+        SimpLanPlusLexer lexer = new SimpLanPlusLexer(stream);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
-        antlr.SimpLanPlusParser parser = new antlr.SimpLanPlusParser(tokens);
-
+        SimpLanPlusParser parser = new SimpLanPlusParser(tokens);
+        Visitor visitor = new  Visitor();
         List<String> parserErrors = new ArrayList<>();
         CustomErrorListener errorListener = new CustomErrorListener(parserErrors);
-        parser.addErrorListener(errorListener);
-
-        // Creazione della tabella dei simboli
-        SymbolTable symbolTable = new SymbolTable();
 
         // Aggiungi un listener personalizzato per l'analisi dell'albero del parser
-        ParseTreeListener listener = new CustomListener(symbolTable);
+        parser.removeErrorListeners();
+        parser.addErrorListener(errorListener);
 
         ParseTreeWalker walker = new ParseTreeWalker();
 
-
         // Esegui l'analisi del programma
-        ParseTree parseTree = parser.prog();
+        Node AST = visitor.visit(parser.prog());
 
         //Errori di sintassi
         if (!parserErrors.isEmpty()) {
             System.out.println("Error: Ci sono errori di sintassi nel programma.");
-        }
+            errorListener.writeOnFile(OUTPUT_PATH);
+            return;
+        } else {
+            System.out.println("Parse completed with no errors!");
+            // Creazione della tabella dei simboli
+            SymbolTable ST = new SymbolTable();
+            ArrayList<SemanticError> errors = AST.checkSemantics(ST, 0);
+            //Errori semantici sugli identificatori
 
-        //Errori semantici sugli identificatori
-        else {
-            // Continua con l'analisi dell'albero
-            walker.walk(listener, parseTree);
 
             // Verifica degli identificatori non dichiarati
-            List<Symbol> undeclaredIdentifiers = symbolTable.getUndeclaredIdentifiers();
+            List<Symbol> undeclaredIdentifiers = ST.getUndeclaredIdentifiers();
             if (!undeclaredIdentifiers.isEmpty()) {
                 for (Symbol identifier : undeclaredIdentifiers) {
                     parserErrors.add("Errore - Identificatore non dichiarato: " + identifier);
@@ -60,16 +63,15 @@ public class Main {
             }
 
             // Verifica degli identificatori duplicati
-            List<Symbol> duplicateIdentifiers = symbolTable.getDuplicateIdentifiers();
+            List<Symbol> duplicateIdentifiers = ST.getDuplicateIdentifiers();
             if (!duplicateIdentifiers.isEmpty()) {
                 for (Symbol identifier : duplicateIdentifiers) {
                     parserErrors.add("Error - Identificatore dichiarati più volte nello stesso ambiente:" + identifier);
                 }
             }
 
-            printSymbolTable(symbolTable);
+            printSymbolTable(ST);
         }
-
 
 
         if (!parserErrors.isEmpty()) {
@@ -94,7 +96,7 @@ public class Main {
 
     }
 
-    private static void printSymbolTable(SymbolTable symbolTable){
+    private static void printSymbolTable(SymbolTable symbolTable) {
         // Visualizzazione della tabella dei simboli
         //Simboli dichiarati
         System.out.println("Identificatori dichiarati:");
