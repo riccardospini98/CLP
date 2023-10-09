@@ -7,7 +7,7 @@ import semanticanalysis.SymbolTable;
 
 import java.util.ArrayList;
 
-public class AssignmentNode implements Node {
+public class AssignNode implements Node {
 
     private String id;
 
@@ -16,7 +16,7 @@ public class AssignmentNode implements Node {
 
     private int nesting;
 
-    public AssignmentNode(String _id, Node _exp) {
+    public AssignNode(String _id, Node _exp) {
         id = _id;
         exp = _exp;
     }
@@ -29,7 +29,7 @@ public class AssignmentNode implements Node {
         errors.addAll(exp.checkSemantics(ST, nesting));
 
         try {
-            type = ST.lookup(id, true, false).getType();
+            type = ST.lookup(id).getType();
         } catch (Exception e) {
             errors.add(new SemanticError(e.getMessage()));
         }
@@ -40,7 +40,7 @@ public class AssignmentNode implements Node {
     @Override
     public Type typeCheck() {
         if (exp.typeCheck().getClass().equals(type.getClass()))
-            return null; //TODO: controlla
+            return null;
         else {
             System.out.println("Wrong return type for assignment " + id);
             return new ErrorType();

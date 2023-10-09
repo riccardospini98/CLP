@@ -63,13 +63,13 @@ public class SymbolTable {
 		return (T != null) ;
 	}
 	
-	public void insert(String id, Type type, int _nesting, String _label) {
+	public void insert(String id, Type type, int _nesting, String _label, Boolean _init) {
 		int n = symbol_table.size() - 1 ;
 		HashMap<String,STentry> H = symbol_table.get(n) ;
 		symbol_table.remove(n) ;
 		int offs = offset.get(n) ;
 		offset.remove(n) ;
-		STentry idtype = new STentry(type,offs,_nesting, _label) ;
+		STentry idtype = new STentry(type,offs,_nesting, _label, _init) ;
 		H.put(id,idtype) ;
 		symbol_table.add(H) ;
 		if (type.getClass().equals((new BoolType()).getClass()))

@@ -8,33 +8,30 @@ public class STentry {
 	private int nesting ;
 	private String label ;
 
-	
-	public STentry(Type _type, int _offset, int _nesting) {
-		type = _type ;
-		offset = _offset ;
-		nesting = _nesting ;
-	}
-	
-	public STentry(Type _type, int _offset, int _nesting, String  _label) {
+	private Boolean initialized ;
+
+	public STentry(Type _type, int _offset, int _nesting, String  _label, Boolean _initialized) {
 		type = _type ;
 		offset = _offset ;
 		nesting = _nesting ;
 		label = _label ;
+		initialized = _initialized ;
+
 	}
 	
-	public Type gettype() {
+	public Type getType() {
 		return type ;
 	}
 
-	public int getoffset() {
+	public int getOffset() {
 		return offset ;
 	}
 	
-	public int getnesting() {
+	public int getNesting() {
 		return nesting ;
 	}
 	
-	public String getlabel() {
+	public String getLabel() {
 		return label ;
 	}
 

@@ -103,7 +103,7 @@ public class Visitor extends SimpLanPlusBaseVisitor<Node>{
      **/
     @Override
     public Node visitAssign(SimpLanPlusParser.AssignContext ctx) {
-        return new ;
+        return new AssignNode(ctx.ID().getText(), visit(ctx.exp()));
     }
 
     /**
@@ -111,32 +111,59 @@ public class Visitor extends SimpLanPlusBaseVisitor<Node>{
      **/
     @Override
     public Node visitFunCallVoid(SimpLanPlusParser.FunCallVoidContext ctx) {
-        return super.visitFunCallVoid(ctx);
+        ArrayList<Node> expressions = new ArrayList<>();
+        for (SimpLanPlusParser.ExpContext exp: ctx.exp()) {
+            expressions.add(visit(exp));
+        }
+        return new CallNode(ctx.ID().getText(), expressions);
     }
 
     /**
-     * ID '(' ( exp (',' exp)* )? ')'
+     * 'if' '(' exp ')' '{' thenStm=(stm+) '}' ('else' '{' elseStm=(stm+) '}')?
      **/
     @Override
     public Node visitIfStm(SimpLanPlusParser.IfStmContext ctx) {
-        return super.visitIfStm(ctx);
+        ArrayList<Node> thenStm = new ArrayList<>();
+        ArrayList<Node> elseStm = new ArrayList<>();
+        for (SimpLanPlusParser.StmContext stm: ctx.thenStm().stm()) {
+            thenStm.add(visit(stm));
+        }
+        if ( ctx.elseStm() != null) {
+            for (SimpLanPlusParser.StmContext stm: ctx.elseStm().stm()) {
+                elseStm.add(visit(stm));
+            }
+            return new IfStmNode(visit(ctx.exp()), thenStm, elseStm)
+        }
+        return new IfStmNode(visit(ctx.exp()), thenStm);
     }
 
+    /**
+     * '(' exp ')'
+     **/
     @Override
     public Node visitBaseExp(SimpLanPlusParser.BaseExpContext ctx) {
-        return super.visitBaseExp(ctx);
+        return visit(ctx.exp());
     }
 
+    /**
+     * INTEGER
+     **/
     @Override
     public Node visitIntVal(SimpLanPlusParser.IntValContext ctx) {
-        return super.visitIntVal(ctx);
+        return new IntNode(Integer.parseInt(ctx.INTEGER().getText()));
     }
 
+    /**
+     * '!' exp
+     **/
     @Override
     public Node visitNot(SimpLanPlusParser.NotContext ctx) {
         return super.visitNot(ctx);
     }
 
+    /**
+     * 'if' '(' guard=exp ')' '{' ifBranch  '}' 'else' '{' elseBranch '}'
+     **/
     @Override
     public Node visitIfThenElse(SimpLanPlusParser.IfThenElseContext ctx) {
         return super.visitIfThenElse(ctx);

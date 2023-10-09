@@ -21,10 +21,13 @@ type   : 'int'
 
 stm    : ID '=' exp ';' #assign
        | ID '(' (exp (',' exp)* )? ')' ';' #funCallVoid
-       | 'if' '(' exp ')' '{' (stm)+ '}' ('else' '{' (stm)+ '}')? #ifStm
+       | 'if' '(' exp ')' '{' thenStm '}' ('else' '{' elseStm '}')? #ifStm
 	   ;
+	   thenStm: (stm)+;
+	   elseStm: (stm)+;
 
-exp    : INTEGER #intVal | ('true' | 'false') #boolVal
+exp    : INTEGER #intVal
+       | ('true' | 'false') #boolVal
        | ID #var
        | '!' exp #not
        | left=exp (mul='*' | div='/') right=exp #mulDivExp

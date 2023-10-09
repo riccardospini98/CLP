@@ -31,25 +31,25 @@ public class IdNode implements Node {
 	}
   
 	public Type typeCheck () {
-		if (type.gettype() instanceof ArrowType) { //
+		if (type.getType() instanceof ArrowType) { //
 			System.out.println("Wrong usage of function identifier");
 			return new ErrorType() ;
-		} else return type.gettype() ;
+		} else return type.getType() ;
 	}
   
 	public String codeGeneration() {
 		String getAR="";
-		for (int i=0; i < nesting - type.getnesting(); i++) 
+		for (int i = 0; i < nesting - type.getNesting(); i++)
 	    	 getAR += "store T1 0(T1) \n";
 	    return 
 		       "move AL T1 \n"
 		       + getAR  //risalgo la catena statica
-		       + "subi T1 " + type.getoffset() +"\n" //metto offset sullo stack
+		       + "subi T1 " + type.getOffset() +"\n" //metto offset sullo stack
 			   + "store A0 0(T1) \n" ; //carico sullo stack il valore all'indirizzo ottenuto
 	}
 
 	public String toPrint(String s) {
-		return s+"Id:" + id + " at nestlev " + type.getnesting() +"\n" ;  
+		return s+"Id:" + id + " at nestlev " + type.getNesting() +"\n" ;
 	}
   
 }  

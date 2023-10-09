@@ -35,7 +35,7 @@ public class CallNode implements Node {
   }
   
 	public Type typeCheck() {
-		Type _type = entry.gettype() ;
+		Type _type = entry.getType() ;
 		if (_type instanceof ArrowType) {
 			ArrayList<Type> _partype = ((ArrowType) _type).get_inputtype();
 			if ( _partype.size() != parameters.size() ) {
@@ -65,7 +65,7 @@ public class CallNode implements Node {
 	    		parCode += parameters.get(i).codeGeneration() + "pushr A0\n" ;
 	    
 	    String getAR="";
-		for (int i=0; i < nesting - entry.getnesting() ; i++) 
+		for (int i = 0; i < nesting - entry.getNesting() ; i++)
 		    	getAR+="store T1 0(T1) \n";
 		  					// formato AR: control_link + access link + parameters + indirizzo di ritorno + dich_locali
 
@@ -78,13 +78,13 @@ public class CallNode implements Node {
 				+ parCode 				// calcolo i parametri attuali con l'access link del chiamante
 				+ "move FP AL \n"
 				+ "subi AL 1 \n"
-				+ "jsub " + entry.getlabel() + "\n" ;
+				+ "jsub " + entry.getLabel() + "\n" ;
   }
 
 	public String toPrint(String s) {  //
 	    String parlstr="";
 		for (Node par : parameters)
 			parlstr+=par.toPrint(s+"  ");		
-		return s+"Call:" + id + " at nestlev " + nesting +"\n" + entry.gettype().toPrint(s+"  ") + parlstr ;        
+		return s+"Call:" + id + " at nestlev " + nesting +"\n" + entry.getType().toPrint(s+"  ") + parlstr ;
 	} 
 }  

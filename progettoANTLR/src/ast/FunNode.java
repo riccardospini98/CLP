@@ -34,7 +34,7 @@ public class FunNode implements Node {
 		nesting = _nesting ;
 		
 		if (ST.lookup(id) != null)
-			errors.add(new SemanticError("Identifier " + id + " already declared"));
+			errors.add(new SemanticError("Function identifier " + id + " already declared"));
 		else {
 			HashMap<String,STentry> HM = new HashMap<String,STentry>() ;
 			ArrayList<Type> partypes = new ArrayList<Type>() ;
@@ -45,7 +45,7 @@ public class FunNode implements Node {
     	  			partypes.add(arg.getType());
     	  			if (ST.top_lookup(arg.getId()))
     	  					errors.add(new SemanticError("Parameter id " + arg.getId() + " already declared")) ;
-    	  			else ST.insert(arg.getId(), arg.getType(), nesting+1, "") ;
+    	  			else ST.insert(arg.getId(), arg.getType(), nesting+1, "", false) ;
     	  		}
 
 			type = new ArrowType(partypes, returntype) ;
@@ -57,7 +57,7 @@ public class FunNode implements Node {
 			
 			flabel = SimpLanlib.freshFunLabel() ;
 			
-			ST.insert(id, type, nesting, flabel) ;
+			ST.insert(id, type, nesting, flabel, true) ;
 		}
 		return errors ; // problemi con la generazione di codice!
 	}

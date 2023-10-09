@@ -78,6 +78,18 @@ public interface SimpLanPlusVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIfStm(SimpLanPlusParser.IfStmContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link SimpLanPlusParser#thenStm}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitThenStm(SimpLanPlusParser.ThenStmContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SimpLanPlusParser#elseStm}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitElseStm(SimpLanPlusParser.ElseStmContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code baseExp}
 	 * labeled alternative in {@link SimpLanPlusParser#exp}.
 	 * @param ctx the parse tree

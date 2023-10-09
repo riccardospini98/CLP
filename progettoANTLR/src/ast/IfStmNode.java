@@ -21,6 +21,11 @@ public class IfStmNode implements Node {
         elsebranch = _elsebranch;
     }
 
+    public IfStmNode(Node _guard, ArrayList<Node> _thenbranch) {
+        guard = _guard;
+        thenbranch = _thenbranch;
+    }
+
     @Override
     public ArrayList<SemanticError> checkSemantics(SymbolTable ST, int _nesting) {
         ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
