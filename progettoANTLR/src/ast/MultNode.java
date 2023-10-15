@@ -31,7 +31,9 @@ public class MultNode implements Node {
 		  return new IntType() ;
 		else {
 		  System.out.println("Type Error: Non integers in multiplication") ;
-		  return new ErrorType() ;
+			ErrorType err = new ErrorType();
+			err.setMessage("Type Error: Non integers in multiplication");
+			return  err;
 		}
 	}  
   

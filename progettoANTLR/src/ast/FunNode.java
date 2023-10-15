@@ -14,14 +14,14 @@ import java.util.HashMap;
 public class FunNode implements Node {
 	private String id;
 	private Type returntype ;
-	private ArrayList<ParNode> parlist ; 
+	private ArrayList<ParamNode> parlist ;
 
 	private Node body ;
 	private ArrowType type ;
 	private int nesting ;
 	private String flabel ;
   
-	public FunNode (String _id, Type _type, ArrayList<ParNode> _parlist, Node _body) {
+	public FunNode (String _id, Type _type, ArrayList<ParamNode> _parlist, Node _body) {
 		id = _id ;
 		returntype = _type;
 		parlist = _parlist ;
@@ -41,7 +41,7 @@ public class FunNode implements Node {
 		
 			ST.add(HM);
 			
-			for (ParNode arg : parlist){
+			for (ParamNode arg : parlist){
     	  			partypes.add(arg.getType());
     	  			if (ST.top_lookup(arg.getId()))
     	  					errors.add(new SemanticError("Parameter id " + arg.getId() + " already declared")) ;
@@ -68,7 +68,9 @@ public class FunNode implements Node {
     			return null ;
 		else {
 			System.out.println("Wrong return type for function "+id);
-			return new ErrorType() ;
+			ErrorType err = new ErrorType();
+			err.setMessage("Wrong return type for function "+id);
+			return  err;
 		}  
   	}
   

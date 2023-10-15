@@ -7,7 +7,7 @@ import ast.Types.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class SymbolTable {
+public class 	SymbolTable {
 	private ArrayList<HashMap<String,STentry>>  symbol_table ;
 	private ArrayList<Integer> offset;
 	
@@ -87,6 +87,35 @@ public class SymbolTable {
 		offset.remove(n) ;
 		offs = offs + 1 ;
 		offset.add(offs) ;	
+	}
+
+	public void toPrint(String fun, int nesting){
+		System.out.println("--------------------------------");
+		System.out.println("ST"+nesting+": "+fun);
+		for(HashMap<String,STentry> h : symbol_table){
+			if(h.size()>0){
+				System.out.println("[");
+				h.forEach((s,st) -> {
+					System.out.println(s+st.toPrint());
+				});
+				System.out.println("]");
+ 		}
+			else System.out.println("[]");
+		}
+		System.out.println("VarTable: ");
+		/*
+		for(HashMap<String,Boolean> h : var_table){
+			if(h.size()>0){
+				System.out.println("[");
+				h.forEach((s,st) -> {
+					System.out.println("|"+s+":"+st.toString()+"|");
+				});
+				System.out.println("]");
+			}
+			else System.out.println("[]");
+		}
+
+		 */
 	}
 
 }

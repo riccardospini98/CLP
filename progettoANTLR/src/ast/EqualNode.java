@@ -34,7 +34,9 @@ public class EqualNode implements Node {
 			  return new BoolType() ;
 		else {
 			  System.out.println("Type Error: Different types in equality") ;
-			  return new ErrorType() ;
+			ErrorType err = new ErrorType();
+			err.setMessage("Type Error: Different types in equality");
+			return  err;
 		  }
 	}  
 

@@ -61,11 +61,15 @@ public class IfExpNode implements Node {
                 return thenExpType;
             else {
                 System.out.println("Type Error: incompatible types in then and else branches");
-                return new ErrorType();
+                ErrorType err = new ErrorType();
+                err.setMessage("Type Error: incompatible types in then and else branches");
+                return  err;
             }
         } else {
             System.out.println("Type Error: non boolean condition in if");
-            return new ErrorType();
+            ErrorType err = new ErrorType();
+            err.setMessage("Type Error: non boolean condition in if");
+            return  err;
         }
     }
 

@@ -40,22 +40,32 @@ public class CallNode implements Node {
 			ArrayList<Type> _partype = ((ArrowType) _type).get_inputtype();
 			if ( _partype.size() != parameters.size() ) {
 				System.out.println("Wrong number of parameters in the invocation of "+id);
-				return new ErrorType() ;
+				ErrorType err = new ErrorType();
+				err.setMessage("Wrong number of parameters in the invocation of "+id);
+				return  err;
 			} else {
 				boolean ok = true ;
+				String errorMsg = "";
 				for (int i = 0 ; i < parameters.size() ; i++) {
 					Type par_i = (parameters.get(i)).typeCheck() ;
 					if ( !(par_i.getClass().equals(_partype.get(i).getClass()) )) {
 							System.out.println("Wrong type for "+(i+1)+"-th parameter in the invocation of "+id);
+							errorMsg += "Wrong type for "+(i+1)+"-th parameter in the invocation of "+id+"\n";
 							ok = false ;
 					} 
 				}
 				if (ok) return ((ArrowType) _type).get_outputtype() ;
-				else return new ErrorType() ;
+				else {
+					ErrorType err = new ErrorType();
+					err.setMessage(errorMsg);
+					return  err;
+				}
 			} 
 		} else {
 				System.out.println("Invocation of a non-function "+id) ;
-				return new ErrorType() ;
+			ErrorType err = new ErrorType();
+			err.setMessage("Invocation of a non-function "+id);
+			return  err;
 		}
 	}
   

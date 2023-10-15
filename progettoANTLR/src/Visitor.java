@@ -1,4 +1,5 @@
 import ast.*;
+import ast.OrNode;
 import ast.Types.BoolType;
 import ast.Types.IntType;
 import ast.Types.Type;
@@ -49,9 +50,9 @@ public class Visitor extends SimpLanPlusBaseVisitor<Node>{
      **/
     @Override
     public Node visitFunDec(SimpLanPlusParser.FunDecContext ctx) {
-        ArrayList<ParNode> params = new ArrayList<>();
+        ArrayList<ParamNode> params = new ArrayList<>();
         for (SimpLanPlusParser.ParamContext p: ctx.param()) {
-            params.add(new ParNode(p.ID().getText(), (Type) visit(p.type())));
+            params.add(new ParamNode(p.ID().getText(), (Type) visit(p.type())));
         }
         Node body = visit(ctx.body());
         return new FunNode(ctx.ID().getText(), (Type)visit(ctx.type()), params, body);
@@ -62,7 +63,7 @@ public class Visitor extends SimpLanPlusBaseVisitor<Node>{
      **/
     @Override
     public Node visitParam(SimpLanPlusParser.ParamContext ctx) {
-        return new ParNode(ctx.ID().getText(), (Type) visit( ctx.type() ));
+        return new ParamNode(ctx.ID().getText(), (Type) visit( ctx.type() ));
     }
 
     /**
@@ -103,6 +104,7 @@ public class Visitor extends SimpLanPlusBaseVisitor<Node>{
      **/
     @Override
     public Node visitAssign(SimpLanPlusParser.AssignContext ctx) {
+        System.out.println("Hello");
         return new AssignNode(ctx.ID().getText(), visit(ctx.exp()));
     }
 
@@ -132,7 +134,7 @@ public class Visitor extends SimpLanPlusBaseVisitor<Node>{
             for (SimpLanPlusParser.StmContext stm: ctx.elseStm().stm()) {
                 elseStm.add(visit(stm));
             }
-            return new IfStmNode(visit(ctx.exp()), thenStm, elseStm)
+            return new IfStmNode(visit(ctx.exp()), thenStm, elseStm);
         }
         return new IfStmNode(visit(ctx.exp()), thenStm);
     }
@@ -158,59 +160,95 @@ public class Visitor extends SimpLanPlusBaseVisitor<Node>{
      **/
     @Override
     public Node visitNot(SimpLanPlusParser.NotContext ctx) {
-        return super.visitNot(ctx);
+        return new NotExpNode(visit(ctx.exp()));
     }
 
     /**
-     * 'if' '(' guard=exp ')' '{' ifBranch  '}' 'else' '{' elseBranch '}'
+     * 'if' '(' guard=exp ')' '{' (stm)*exp  '}' 'else' '{' (stm)*exp '}'
      **/
     @Override
     public Node visitIfThenElse(SimpLanPlusParser.IfThenElseContext ctx) {
-        return super.visitIfThenElse(ctx);
+        ArrayList<Node> _stm1 = new ArrayList<Node>() ;
+        ArrayList<Node> _stm2 = new ArrayList<Node>() ;
+
+        for (SimpLanPlusParser.StmContext st : ctx.ifBranch().stm())
+            _stm1.add( visit(st) );
+
+        for (SimpLanPlusParser.StmContext st : ctx.elseBranch().stm())
+            _stm2.add( visit(st) );
+
+        return new IfExpNode(visit(ctx.guard), _stm1, visit(ctx.ifBranch().exp()), _stm2, visit(ctx.elseBranch().exp()));
     }
 
+    /**
+     * left=exp (mul='*' | div='/') right=exp
+     **/
     @Override
     public Node visitMulDivExp(SimpLanPlusParser.MulDivExpContext ctx) {
-        return super.visitMulDivExp(ctx);
+        if (ctx.op.getText().equals("/")) {
+            return new DivNode(visit(ctx.left), visit(ctx.right));
+        } else {
+            return new MultNode(visit(ctx.left), visit(ctx.right));
+        }
     }
-
+    /**
+     * left=exp (sum='+' | sub='-') right=exp
+     **/
     @Override
     public Node visitVar(SimpLanPlusParser.VarContext ctx) {
-        return super.visitVar(ctx);
+        return new IdNode(ctx.ID().getText());
     }
 
+    /**
+     * left=exp (gt='>' | lt='<' | gte='>=' | lte='<=' | eq='==') right=exp
+     **/
     @Override
     public Node visitComparisonExp(SimpLanPlusParser.ComparisonExpContext ctx) {
-        return super.visitComparisonExp(ctx);
+        return new CompNode(ctx.op.getText(), visit(ctx.left), visit(ctx.right));
     }
 
+    /**
+     * left=exp (sum='+' | sub='-') right=exp
+     **/
     @Override
     public Node visitSumSubExp(SimpLanPlusParser.SumSubExpContext ctx) {
-        return super.visitSumSubExp(ctx);
+        if(ctx.op.getText().equals("+")) {
+            return new SumNode(visit(ctx.left), visit(ctx.right));
+        } else {
+            return new SubNode(visit(ctx.left), visit(ctx.right));
+        }
     }
 
+    /**
+     * left=exp (and='&&' | or='||') right=exp
+     **/
     @Override
     public Node visitBoolExp(SimpLanPlusParser.BoolExpContext ctx) {
-        return super.visitBoolExp(ctx);
+        if (ctx.op.getText().equals("&&")) {
+            return new AndNode(visit(ctx.left), visit(ctx.right));
+        } else {
+
+            return new OrNode(visit(ctx.left), visit(ctx.right));
+        }
     }
 
+    /**
+     * exp: ('true' | 'false')                                                                                  #boolExp
+     */
     @Override
     public Node visitBoolVal(SimpLanPlusParser.BoolValContext ctx) {
-        return super.visitBoolVal(ctx);
+        return new BoolNode(Boolean.parseBoolean(ctx.getText()));
     }
 
+    /**
+     * exp: ID '(' (exp (',' exp)* )? ')'                                                                                   #boolExp
+     */
     @Override
     public Node visitFunCallReturn(SimpLanPlusParser.FunCallReturnContext ctx) {
-        return super.visitFunCallReturn(ctx);
-    }
+        ArrayList<Node> args = new ArrayList<Node>();
+        for (SimpLanPlusParser.ExpContext exp : ctx.exp())
+            args.add(visit(exp));
+        return new CallNode(ctx.ID().getText(), args);
 
-    @Override
-    public Node visitIfBranch(SimpLanPlusParser.IfBranchContext ctx) {
-        return super.visitIfBranch(ctx);
-    }
-
-    @Override
-    public Node visitElseBranch(SimpLanPlusParser.ElseBranchContext ctx) {
-        return super.visitElseBranch(ctx);
     }
 }

@@ -1,6 +1,7 @@
 package ast;
 
 import ast.Types.Type;
+import ast.Types.VoidType;
 import evaluator.SimpLanlib;
 import semanticanalysis.STentry;
 import semanticanalysis.SemanticError;
@@ -21,7 +22,7 @@ public class ProgLetInNode implements Node {
 		stm = _stm ;
 		exp = _exp ;
 	}
-	public ProgLetInNode (ArrayList<Node> _dec, ArrayList<Node> _stm,) {
+	public ProgLetInNode (ArrayList<Node> _dec, ArrayList<Node> _stm) {
 		dec = _dec ;
 		stm = _stm;
 	}
@@ -54,7 +55,12 @@ public class ProgLetInNode implements Node {
 	public Type typeCheck () {
 		for (Node d: dec)
 		    d.typeCheck();
-		return exp.typeCheck();
+		if(exp != null) {
+			return exp.typeCheck();
+		}
+		else {
+			return new VoidType();
+		}
 	}
 		  
 	public String codeGeneration() {
@@ -75,7 +81,7 @@ public class ProgLetInNode implements Node {
 		String declstr="";
 		for (Node d : dec)
 			declstr += d.toPrint(s+"\t");
-		return s+"ProgLetIn\n" + declstr + "\n" + exp.toPrint(s+"\t") ; 
+		return s+"ProgLetIn\n" + declstr + "\n" + exp.toPrint(s+"\t") ;
 	}
      
 }  

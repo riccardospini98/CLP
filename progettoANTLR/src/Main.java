@@ -1,12 +1,13 @@
+import ast.Types.ErrorType;
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.ParseTreeListener;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import parser.SimpLanPlusLexer;
 import parser.SimpLanPlusParser;
 import semanticanalysis.SemanticError;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ast.Node;
+import semanticanalysis.SymbolTable;
 
 public class Main {
 
@@ -28,7 +30,7 @@ public class Main {
         SimpLanPlusLexer lexer = new SimpLanPlusLexer(stream);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         SimpLanPlusParser parser = new SimpLanPlusParser(tokens);
-        Visitor visitor = new  Visitor();
+        Visitor visitor = new Visitor();
         List<String> parserErrors = new ArrayList<>();
         CustomErrorListener errorListener = new CustomErrorListener(parserErrors);
 
@@ -36,43 +38,59 @@ public class Main {
         parser.removeErrorListeners();
         parser.addErrorListener(errorListener);
 
-        ParseTreeWalker walker = new ParseTreeWalker();
-
         // Esegui l'analisi del programma
         Node AST = visitor.visit(parser.prog());
-
+        System.out.println("Parsing started...");
         //Errori di sintassi
         if (!parserErrors.isEmpty()) {
             System.out.println("Error: Ci sono errori di sintassi nel programma.");
             errorListener.writeOnFile(OUTPUT_PATH);
             return;
-        } else {
-            System.out.println("Parse completed with no errors!");
-            // Creazione della tabella dei simboli
-            SymbolTable ST = new SymbolTable();
-            ArrayList<SemanticError> errors = AST.checkSemantics(ST, 0);
-            //Errori semantici sugli identificatori
-
-
-            // Verifica degli identificatori non dichiarati
-            List<Symbol> undeclaredIdentifiers = ST.getUndeclaredIdentifiers();
-            if (!undeclaredIdentifiers.isEmpty()) {
-                for (Symbol identifier : undeclaredIdentifiers) {
-                    parserErrors.add("Errore - Identificatore non dichiarato: " + identifier);
-                }
+        }
+        System.out.println("Parse completed with no errors!\nStarting semantic check");
+        // Creazione della tabella dei simboli
+        SymbolTable ST = new SymbolTable();
+        ArrayList<SemanticError> errors = AST.checkSemantics(ST, 0);
+        //Errori semantici sugli identificatori
+        if(!errors.isEmpty()) {
+            System.out.println("The semantic check found "+ errors.size()+" errors.");
+            String semanticErrors ="";
+            for (SemanticError e: errors) {
+                semanticErrors += "[X] Semantic error: " + e + "\n";
+                BufferedWriter wr = new BufferedWriter(new FileWriter(OUTPUT_PATH));
+                wr.write(semanticErrors);
+                wr.close();
             }
-
-            // Verifica degli identificatori duplicati
-            List<Symbol> duplicateIdentifiers = ST.getDuplicateIdentifiers();
-            if (!duplicateIdentifiers.isEmpty()) {
-                for (Symbol identifier : duplicateIdentifiers) {
-                    parserErrors.add("Error - Identificatore dichiarati più volte nello stesso ambiente:" + identifier);
-                }
-            }
-
-            printSymbolTable(ST);
         }
 
+        System.out.println("Checking type errors...");
+        Node type = AST.typeCheck();
+        if (type instanceof ErrorType)
+            System.out.println("Type checking is WRONG!" + ((ErrorType) type).getMessage());
+        else
+            System.out.println(type.toPrint("Type checking ok! Type of the program is: "));
+
+/*
+        // Verifica degli identificatori non dichiarati
+        List<Symbol> undeclaredIdentifiers = ST.getUndeclaredIdentifiers();
+        if (!undeclaredIdentifiers.isEmpty()) {
+            for (Symbol identifier : undeclaredIdentifiers) {
+                parserErrors.add("Errore - Identificatore non dichiarato: " + identifier);
+            }
+        }
+
+        // Verifica degli identificatori duplicati
+        List<Symbol> duplicateIdentifiers = ST.getDuplicateIdentifiers();
+        if (!duplicateIdentifiers.isEmpty()) {
+            for (Symbol identifier : duplicateIdentifiers) {
+                parserErrors.add("Error - Identificatore dichiarati più volte nello stesso ambiente:" + identifier);
+            }
+        }
+
+
+        printSymbolTable(ST);
+*/
+        ST.toPrint("", 0);
 
         if (!parserErrors.isEmpty()) {
             File f = new File(OUTPUT_PATH);
@@ -95,7 +113,7 @@ public class Main {
 
 
     }
-
+/*
     private static void printSymbolTable(SymbolTable symbolTable) {
         // Visualizzazione della tabella dei simboli
         //Simboli dichiarati
@@ -122,4 +140,6 @@ public class Main {
             System.out.println(identifier.toString());
         }
     }
+
+ */
 }

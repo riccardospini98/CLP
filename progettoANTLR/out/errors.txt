@@ -1,1 +1,0 @@
-Errore di sintassi riga1:1 mismatched input '<EOF>' expecting {'(', 'int', 'bool', 'void', 'if', 'true', 'false', '!', INTEGER, ID}

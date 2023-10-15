@@ -59,7 +59,9 @@ public class IfStmNode implements Node {
 			*/
         } else {
             System.out.println("Type Error: non boolean condition in if");
-            return new ErrorType();
+            ErrorType err = new ErrorType();
+            err.setMessage("Type Error: non boolean condition in if");
+            return  err;
         }
     }
 

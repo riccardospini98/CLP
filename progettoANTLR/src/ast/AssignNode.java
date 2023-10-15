@@ -39,11 +39,15 @@ public class AssignNode implements Node {
 
     @Override
     public Type typeCheck() {
-        if (exp.typeCheck().getClass().equals(type.getClass()))
+        System.out.println("T-C assign");
+        if (exp.typeCheck().getClass().equals(type.getClass())) {
+            System.out.println("if");
             return null;
-        else {
+        } else {
             System.out.println("Wrong return type for assignment " + id);
-            return new ErrorType();
+            ErrorType err = new ErrorType();
+            err.setMessage("Wrong return type for assignment " + id);
+            return  err;
         }
     }
 
