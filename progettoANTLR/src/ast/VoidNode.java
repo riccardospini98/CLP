@@ -12,18 +12,22 @@ public class VoidNode  implements Node {
     public VoidNode () {
     }
 
+    @Override
     public ArrayList<SemanticError> checkSemantics(SymbolTable ST, int _nesting) {
         return new ArrayList<SemanticError>();
     }
 
+    @Override
     public Type typeCheck() {
         return new VoidType();
     }
 
+    @Override
     public String codeGeneration() {
         return "";
     }
 
+    @Override
     public String toPrint(String s) {
         return s + "void \n";
     }

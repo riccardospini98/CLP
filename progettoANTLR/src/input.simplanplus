@@ -1,2 +1,3 @@
-int x;
-x = true;
+int x ;
+x = false;
+true || 2

@@ -13,19 +13,23 @@ public class IntNode implements Node {
 	public IntNode (Integer _val) {
 		val = _val ;
 	}
-	
+
+	@Override
 	public ArrayList<SemanticError> checkSemantics(SymbolTable ST, int _nesting) {
  	 	  return new ArrayList<SemanticError>();
 	}
- 	  
+
+	@Override
 	public Type typeCheck(){
 		return new IntType();
-	} 
-  
+	}
+
+	@Override
 	public String codeGeneration() {
 		return "storei A0 "+val+"\n";
 	}
 
+	@Override
 	public String toPrint(String s) {
 	    return s + Integer.toString(val) +"\n";  
 	}

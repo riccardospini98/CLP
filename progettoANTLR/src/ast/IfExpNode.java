@@ -42,6 +42,7 @@ public class IfExpNode implements Node {
         return errors;
     }
 
+    @Override
     public Type typeCheck() {
         if (guard.typeCheck() instanceof BoolType) {
             if (thenbranch != null) {
@@ -73,6 +74,7 @@ public class IfExpNode implements Node {
         }
     }
 
+    @Override
     public String codeGeneration() {
         String labelthen = SimpLanlib.freshLabel();
         String labelend = SimpLanlib.freshLabel();
@@ -97,6 +99,7 @@ public class IfExpNode implements Node {
                 labelend + ":\n";
     }
 
+    @Override
     public String toPrint(String s) {
         String thenstring = "";
         String elsestring = "";

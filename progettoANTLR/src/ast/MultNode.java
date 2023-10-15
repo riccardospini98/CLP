@@ -16,7 +16,8 @@ public class MultNode implements Node {
 		left = _left ;
 		right = _right ;
 	}
-  
+
+	@Override
 	public ArrayList<SemanticError> checkSemantics(SymbolTable ST, int _nesting) {
 		ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
 		
@@ -25,7 +26,8 @@ public class MultNode implements Node {
 	  
 		return errors;
 	}
-  
+
+	@Override
 	public Type typeCheck() {
 		if ((left.typeCheck() instanceof IntType) && (right.typeCheck() instanceof IntType) )
 		  return new IntType() ;
@@ -35,8 +37,9 @@ public class MultNode implements Node {
 			err.setMessage("Type Error: Non integers in multiplication");
 			return  err;
 		}
-	}  
-  
+	}
+
+	@Override
     public String codeGeneration() {
 		return 		left.codeGeneration()
 				   + "pushr A0 \n"
@@ -46,6 +49,7 @@ public class MultNode implements Node {
 				   + "popr A0 \n";
     }
 
+	@Override
     public String toPrint(String s) {
         return s+"Mult\n" + left.toPrint(s+"  ") + right.toPrint(s+"  ") ; 
     }

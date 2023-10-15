@@ -19,10 +19,12 @@ public class AssignNode implements Node {
     public AssignNode(String _id, Node _exp) {
         id = _id;
         exp = _exp;
+
     }
 
     @Override
     public ArrayList<SemanticError> checkSemantics(SymbolTable ST, int _nesting) {
+        System.out.println("S-C assign");
         ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
         nesting = _nesting;
 
@@ -30,6 +32,7 @@ public class AssignNode implements Node {
 
         try {
             type = ST.lookup(id).getType();
+            System.out.println(type);
         } catch (Exception e) {
             errors.add(new SemanticError(e.getMessage()));
         }

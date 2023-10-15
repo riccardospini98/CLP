@@ -7,7 +7,7 @@ import ast.Types.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class 	SymbolTable {
+public class SymbolTable {
 	private ArrayList<HashMap<String,STentry>>  symbol_table ;
 	private ArrayList<Integer> offset;
 	
@@ -69,8 +69,8 @@ public class 	SymbolTable {
 		symbol_table.remove(n) ;
 		int offs = offset.get(n) ;
 		offset.remove(n) ;
-		STentry idtype = new STentry(type,offs,_nesting, _label, _init) ;
-		H.put(id,idtype) ;
+		STentry idType = new STentry(type, offs, _nesting, _label, _init) ;
+		H.put(id,idType) ;
 		symbol_table.add(H) ;
 		if (type.getClass().equals((new BoolType()).getClass()))
 			offs = offs + 1 ; // we always increment the offset by 1 otherwise we need ad-hoc

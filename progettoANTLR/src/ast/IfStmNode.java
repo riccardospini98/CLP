@@ -40,6 +40,7 @@ public class IfStmNode implements Node {
         return errors;
     }
 
+    @Override
     public Type typeCheck() {
         if (guard.typeCheck() instanceof BoolType) {
             for (Node thenB : thenbranch) {
@@ -65,6 +66,7 @@ public class IfStmNode implements Node {
         }
     }
 
+    @Override
     public String codeGeneration() {
         String labelthen = SimpLanlib.freshLabel();
         String labelend = SimpLanlib.freshLabel();
@@ -90,6 +92,7 @@ public class IfStmNode implements Node {
     }
 
 
+    @Override
     public String toPrint(String s) {
         String thenstring = "";
         String elsestring = "";

@@ -17,7 +17,8 @@ public class IdNode implements Node {
 	public IdNode (String _id) {
 		id = _id ;
 	}
-  
+
+	@Override
 	public ArrayList<SemanticError> checkSemantics(SymbolTable ST, int _nesting) {
 		ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
 		nesting = _nesting ;
@@ -29,7 +30,8 @@ public class IdNode implements Node {
 
 		return errors;
 	}
-  
+
+	@Override
 	public Type typeCheck () {
 		if (type.getType() instanceof ArrowType) { //
 			System.out.println("Wrong usage of function identifier");
@@ -38,7 +40,8 @@ public class IdNode implements Node {
 			return  err;
 		} else return type.getType() ;
 	}
-  
+
+	@Override
 	public String codeGeneration() {
 		String getAR="";
 		for (int i = 0; i < nesting - type.getNesting(); i++)
@@ -50,6 +53,7 @@ public class IdNode implements Node {
 			   + "store A0 0(T1) \n" ; //carico sullo stack il valore all'indirizzo ottenuto
 	}
 
+	@Override
 	public String toPrint(String s) {
 		return s+"Id:" + id + " at nestlev " + type.getNesting() +"\n" ;
 	}

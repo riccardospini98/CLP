@@ -30,8 +30,8 @@ public class OrNode implements Node {
     public Type typeCheck() {
         Type leftOp = left.typeCheck();
         Type rightOp = right.typeCheck();
-        //Controllo che siano dello stesso entrambi bool e ritorno bool
-        if ((leftOp instanceof BoolType) || (rightOp instanceof BoolType))
+        //both must be booleans
+        if ((leftOp instanceof BoolType) && (rightOp instanceof BoolType))
             return new BoolType();
         else {
             System.out.println("Type Error: incompatible types in op expression");

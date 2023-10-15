@@ -91,6 +91,7 @@ public class Main {
         printSymbolTable(ST);
 */
         ST.toPrint("", 0);
+        ST.toPrint("", 1);
 
         if (!parserErrors.isEmpty()) {
             File f = new File(OUTPUT_PATH);

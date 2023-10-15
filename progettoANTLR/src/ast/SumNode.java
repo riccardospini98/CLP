@@ -16,7 +16,8 @@ public class SumNode implements Node {
 		left = _left ;
 		right = _right ;
 	}
-  
+
+	@Override
 	public ArrayList<SemanticError> checkSemantics(SymbolTable ST, int _nesting) {
 		  ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
 		  
@@ -25,7 +26,8 @@ public class SumNode implements Node {
 		  
 		  return errors;
 	}
-	  
+
+	@Override
 	public Type typeCheck() {
 		  if ((left.typeCheck() instanceof IntType) && (right.typeCheck() instanceof IntType) )
 			  return new IntType() ;
@@ -35,9 +37,10 @@ public class SumNode implements Node {
 			  err.setMessage("Type Error: Non integers in addition");
 			  return  err;
 		  }
-	}  
-	  
-  
+	}
+
+
+	@Override
 	public String codeGeneration() {
 		return left.codeGeneration()+
 			   "pushr A0 \n" +
@@ -46,7 +49,8 @@ public class SumNode implements Node {
 			   "add A0 T1 \n" +
 			   "popr A0 \n" ;
 	}
-   
+
+	@Override
 	public String toPrint(String s) {
 	    return s+"Plus\n" + left.toPrint(s+"  ") + right.toPrint(s+"  ") ; 
 	}
