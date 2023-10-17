@@ -1,5 +1,5 @@
 import ast.*;
-import ast.OrNode;
+import ast.ExpNodes.*;
 import ast.Types.BoolType;
 import ast.Types.IntType;
 import ast.Types.Type;
@@ -65,11 +65,13 @@ public class Visitor extends SimpLanPlusBaseVisitor<Node>{
     /**
      * parm: type ID
      **/
+    /*
     @Override
     public Node visitParam(SimpLanPlusParser.ParamContext ctx) {
         System.out.println("PARAM");
         return new ParamNode(ctx.ID().getText(), (Type) visit( ctx.type() ));
     }
+     */
 
     /**
      * body: TODO
@@ -120,7 +122,7 @@ public class Visitor extends SimpLanPlusBaseVisitor<Node>{
      **/
     @Override
     public Node visitFunCallVoid(SimpLanPlusParser.FunCallVoidContext ctx) {
-        System.out.println("FUNCALL_v");
+        System.out.println("FUNCALL_V");
         ArrayList<Node> expressions = new ArrayList<>();
         for (SimpLanPlusParser.ExpContext exp: ctx.exp()) {
             expressions.add(visit(exp));
@@ -206,7 +208,7 @@ public class Visitor extends SimpLanPlusBaseVisitor<Node>{
         }
     }
     /**
-     * left=exp (sum='+' | sub='-') right=exp
+     * ID
      **/
     @Override
     public Node visitVar(SimpLanPlusParser.VarContext ctx) {

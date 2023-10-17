@@ -35,6 +35,8 @@ public class STentry {
 		return label ;
 	}
 
+	public Boolean isInitialized() { return initialized ; }
+
 	public String toPrint(){
 		return "|"+nesting+"|"+offset+"|"+label+"|"+type.toPrint("");
 	}

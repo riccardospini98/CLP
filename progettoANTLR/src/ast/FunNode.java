@@ -34,7 +34,7 @@ public class FunNode implements Node {
         ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
         nesting = _nesting;
 
-        if (ST.lookup(id) != null)
+        if (ST.lookup(id, false) != null)
             errors.add(new SemanticError("Function identifier " + id + " already declared"));
         else {
             HashMap<String, STentry> HM = new HashMap<String, STentry>();
@@ -46,7 +46,7 @@ public class FunNode implements Node {
                 partypes.add(arg.getType());
                 if (ST.top_lookup(arg.getId()))
                     errors.add(new SemanticError("Parameter id " + arg.getId() + " already declared"));
-                else ST.insert(arg.getId(), arg.getType(), nesting + 1, "", false);
+                else ST.insert(arg.getId(), arg.getType(), nesting + 1, "", true);
             }
 
             type = new ArrowType(partypes, returntype);

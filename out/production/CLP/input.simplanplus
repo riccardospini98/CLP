@@ -1,3 +1,8 @@
 int x ;
-x = false;  
-true || 2
+int z ;
+int fun(int b, int f) {
+    b + f
+}
+x=3;
+fun(x+1, 1);
+z = x + 1;

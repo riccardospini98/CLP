@@ -19,8 +19,10 @@ public class SymbolTable {
 	public Integer nesting() {
 		return symbol_table.size() -1 ;
 	}
-	
-	public STentry lookup(String id) {
+
+	//TODO: setInit(id) setta id nella symbol table (maghari specificando lvl nesting) con init=true;
+
+	public STentry lookup(String id, boolean needToBeInit) {
 		int n = symbol_table.size() - 1 ;
 		boolean found = false ;
 		STentry T = null ;
@@ -30,18 +32,10 @@ public class SymbolTable {
 			if (T != null) found = true ;
 			else n = n-1 ;
 		}
-		return T ;
-	}
-
-	public Integer nslookup(String id) {
-		int n = symbol_table.size() - 1 ;
-		boolean found = false ;
-		while ((n >= 0) && !found) {
-			HashMap<String,STentry> H = symbol_table.get(n) ;
-			if (H.get(id) != null) found = true ;
-			else n = n-1 ;
+		if (needToBeInit && found && !T.isInitialized()) {
+			System.out.println("Error: Symbol "+ id + " must be declared");
 		}
-		return n ;
+		return T ;
 	}
 
 	public void add(HashMap<String,STentry> H) {

@@ -23,9 +23,9 @@ public class IdNode implements Node {
 		ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
 		nesting = _nesting ;
 		
-		STentry st_type = ST.lookup(id) ;
+		STentry st_type = ST.lookup(id, true) ;
 		if (st_type == null)
-			errors.add(new SemanticError("Id " + id + " not declared"));
+			errors.add(new SemanticError("Id " + id + " not initialized"));
 		else type = st_type ;
 
 		return errors;

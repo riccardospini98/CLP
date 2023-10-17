@@ -1,5 +1,6 @@
 package ast;
 
+import ast.Types.ErrorType;
 import ast.Types.Type;
 import ast.Types.VoidType;
 import evaluator.SimpLanlib;
@@ -9,6 +10,7 @@ import semanticanalysis.SymbolTable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.function.Consumer;
 
 public class ProgLetInNode implements Node {
 
@@ -57,8 +59,16 @@ public class ProgLetInNode implements Node {
 
     @Override
     public Type typeCheck() {
+        ArrayList<Type> types = new ArrayList<>();
         for (Node d : dec)
-            d.typeCheck();
+            types.add(d.typeCheck());
+        for (Node s : stm)
+            types.add(s.typeCheck());
+        for (Type t : types){
+            if (t instanceof ErrorType) {
+                return t;
+            }
+        }
         if (exp != null) {
             return exp.typeCheck();
         } else {

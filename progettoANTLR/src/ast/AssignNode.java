@@ -2,6 +2,7 @@ package ast;
 
 import ast.Types.ErrorType;
 import ast.Types.Type;
+import semanticanalysis.STentry;
 import semanticanalysis.SemanticError;
 import semanticanalysis.SymbolTable;
 
@@ -31,8 +32,12 @@ public class AssignNode implements Node {
         errors.addAll(exp.checkSemantics(ST, nesting));
 
         try {
-            type = ST.lookup(id).getType();
-            System.out.println(type);
+            STentry entry = ST.lookup(id, false);
+            if(entry == null)
+                errors.add(new SemanticError("Id " + id + " not declared"));
+            else
+                type = entry.getType();
+                System.out.println("Id " + id + " has type: " + entry.getType());
         } catch (Exception e) {
             errors.add(new SemanticError(e.getMessage()));
         }
@@ -44,12 +49,11 @@ public class AssignNode implements Node {
     public Type typeCheck() {
         System.out.println("T-C assign");
         if (exp.typeCheck().getClass().equals(type.getClass())) {
-            System.out.println("if");
             return null;
         } else {
-            System.out.println("Wrong return type for assignment " + id);
+            System.out.println("Wrong type for assignment of" + id);
             ErrorType err = new ErrorType();
-            err.setMessage("Wrong return type for assignment " + id);
+            err.setMessage("Wrong type for assignment of " + id);
             return  err;
         }
     }

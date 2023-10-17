@@ -24,7 +24,7 @@ public class CallNode implements Node {
     public ArrayList<SemanticError> checkSemantics(SymbolTable ST, int _nesting) {
         ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
         nesting = _nesting;
-        STentry tmp = ST.lookup(id);
+        STentry tmp = ST.lookup(id, true);
         if (tmp != null) {
             entry = tmp;
             for (Node par : parameters)

@@ -32,7 +32,7 @@ exp    : INTEGER #intVal
        | '!' exp #not
        | left=exp (op='*' | op='/') right=exp #mulDivExp
        | left=exp (op='+' | op='-') right=exp #sumSubExp
-       | left=exp (op='>' | op='<' | op='>=' | op='<=' ) right=exp #comparisonExp
+       | left=exp (op='>' | op='<' | op='>=' | op='<=' | op='==') right=exp #comparisonExp
        | left=exp (op='&&' | op='||') right=exp #boolExp
        | 'if' '(' guard=exp ')' '{' ifBranch  '}' 'else' '{' elseBranch '}' #ifThenElse
        | '(' exp ')' #baseExp
@@ -57,4 +57,4 @@ WS              : (' '|'\t'|'\n'|'\r')-> skip;
 LINECOMENTS     : '//' (~('\n'|'\r'))* -> skip;
 BLOCKCOMENTS    : '/*'( ~('/'|'*')|'/'~'*'|'*'~'/'|BLOCKCOMENTS)* '*/' -> skip;
 
-ERR             : .  -> channel(HIDDEN);
+//ERR             : .  -> channel(HIDDEN);

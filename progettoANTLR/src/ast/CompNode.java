@@ -63,7 +63,7 @@ public class CompNode implements Node {
                         ltrue + ":\n" +
                         "beq T1 A0 " + leq + "\n" + //se sono uguali allora 0
                         "storei A0 1 \n" +
-                        lend + ":";
+                        lend + ":\n";
                 break;
             case "<":
                 ret += left.codeGeneration() +
@@ -77,7 +77,7 @@ public class CompNode implements Node {
                         ltrue + ":\n" +
                         "beq T1 A0 " + leq + "\n" + //se sono uguali allora 0
                         "storei A0 1 \n" +
-                        lend + ":";
+                        lend + ":\n";
                 break;
             case ">=": // l >= r
                 ret += left.codeGeneration() +
@@ -89,7 +89,7 @@ public class CompNode implements Node {
                         "b " + lend + "\n" +
                         ltrue + ":\n" + //se vero restituisco 1
                         "storei A0 1 \n" +
-                        lend + ":";
+                        lend + ":\n";
                 break;
             case "<=": // l <= r
                 ret += left.codeGeneration() +
@@ -101,8 +101,19 @@ public class CompNode implements Node {
                         "b " + lend + "\n" +
                         ltrue + ":\n" + //se vero restituisco 1
                         "storei A0 1 \n" +
-                        lend + ":";
+                        lend + ":\n";
                 break;
+            case "==":
+                ret += left.codeGeneration() +
+                        "pushr A0 \n" +
+                        right.codeGeneration() +
+                        "popr T1 \n" +
+                        "beq A0 T1 " + ltrue + "\n" +
+                        "storei A0 0\n" +
+                        "b " + lend + "\n" +
+                        ltrue + ":\n" +
+                        "storei A0 1\n" +
+                        lend + ":\n";
         }
         return ret + " //EndCompExpNode \n";
     }
