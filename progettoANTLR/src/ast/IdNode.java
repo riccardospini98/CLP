@@ -23,7 +23,7 @@ public class IdNode implements Node {
 		ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
 		nesting = _nesting ;
 		
-		STentry st_type = ST.lookup(id, true) ;
+		STentry st_type = ST.lookup(id, false, false) ;
 		if (st_type == null)
 			errors.add(new SemanticError("Id " + id + " not initialized"));
 		else type = st_type ;

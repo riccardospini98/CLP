@@ -16,8 +16,6 @@ import java.util.List;
 
 import semanticanalysis.SymbolTable;
 
-
-
 public class Main {
 
     public static final String ANSI_RED = "\u001B[31m";
@@ -44,11 +42,11 @@ public class Main {
         System.out.println("Parsing started...");
         //Errori di sintassi
         if (!parserErrors.isEmpty()) {
-            System.out.println(ANSI_RED + "[X] Error: Ci sono errori di sintassi nel programma.");
+            System.out.println(ANSI_RED + "[X] ERROR: Ci sono errori di sintassi nel programma.");
             errorListener.writeOnFile(OUTPUT_PATH);
             return;
         }
-        System.out.println("Parse completed with no errors!\nStarting semantic check");
+        System.out.println("Parse completed with no errors!\nStarting semantic check...");
         // Creazione della tabella dei simboli
         SymbolTable ST = new SymbolTable();
         ArrayList<SemanticError> errors = AST.checkSemantics(ST, 0);
@@ -57,8 +55,8 @@ public class Main {
             System.out.println(ANSI_RED + "The semantic check found "+ errors.size()+" errors.");
             String semanticErrors ="";
             for (SemanticError e: errors) {
-                semanticErrors += "[X] Semantic error: " + e + "\n";
-                System.out.println(ANSI_RED + "[X] Semantic error: " + e + "\n");
+                semanticErrors += "[X] ERROR: Semantic error: " + e + "\n";
+                System.out.println(ANSI_RED + "[X] ERROR: Semantic error: " + e + "\n");
                 /*
                 BufferedWriter wr = new BufferedWriter(new FileWriter(OUTPUT_PATH));
                 wr.write(semanticErrors);
@@ -72,7 +70,7 @@ public class Main {
         System.out.println("Checking type errors...");
         Node type = AST.typeCheck();
         if (type instanceof ErrorType)
-            System.out.println(ANSI_RED + "[X] Type checking is WRONG!" + ((ErrorType) type).getMessage());
+            System.out.println(ANSI_RED + "[X] ERROR: Type checking is WRONG!\n\t" + ((ErrorType) type).getMessage());
         else
             System.out.println(type.toPrint("Type checking ok! Type of the program is: "));
 

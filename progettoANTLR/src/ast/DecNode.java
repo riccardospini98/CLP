@@ -30,7 +30,6 @@ public class DecNode implements Node {
 
     @Override
     public Type typeCheck() {
-        System.out.println("T-C dec");
         return null;
     }
 

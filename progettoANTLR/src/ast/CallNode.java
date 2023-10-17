@@ -8,7 +8,6 @@ import semanticanalysis.SemanticError;
 import semanticanalysis.SymbolTable;
 
 import java.util.ArrayList;
-
 public class CallNode implements Node {
     private String id;
     private STentry entry;
@@ -24,11 +23,12 @@ public class CallNode implements Node {
     public ArrayList<SemanticError> checkSemantics(SymbolTable ST, int _nesting) {
         ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
         nesting = _nesting;
-        STentry tmp = ST.lookup(id, true);
+        STentry tmp = ST.lookup(id, false, false);
         if (tmp != null) {
             entry = tmp;
-            for (Node par : parameters)
+            for (Node par : parameters) {
                 errors.addAll(par.checkSemantics(ST, nesting));
+            }
         } else {
             errors.add(new SemanticError("Id " + id + " not declared"));
         }

@@ -20,9 +20,9 @@ public class SymbolTable {
 		return symbol_table.size() -1 ;
 	}
 
-	//TODO: setInit(id) setta id nella symbol table (maghari specificando lvl nesting) con init=true;
+	//TODO: setInit(id) setta id nella symbol table (magari specificando lvl nesting) con init=true;
 
-	public STentry lookup(String id, boolean needToBeInit) {
+	public STentry lookup(String id, boolean declaring, boolean initializing) {
 		int n = symbol_table.size() - 1 ;
 		boolean found = false ;
 		STentry T = null ;
@@ -32,8 +32,11 @@ public class SymbolTable {
 			if (T != null) found = true ;
 			else n = n-1 ;
 		}
-		if (needToBeInit && found && !T.isInitialized()) {
-			System.out.println("Error: Symbol "+ id + " must be declared");
+		if (found && initializing) {
+			T.setInit();
+		}
+		if (found && !initializing && !declaring && !T.isInitialized()) {
+			System.out.println("[X] ERROR: Symbol "+ id + " must be initialized before use");
 		}
 		return T ;
 	}
@@ -96,20 +99,6 @@ public class SymbolTable {
  		}
 			else System.out.println("[]");
 		}
-		System.out.println("VarTable: ");
-		/*
-		for(HashMap<String,Boolean> h : var_table){
-			if(h.size()>0){
-				System.out.println("[");
-				h.forEach((s,st) -> {
-					System.out.println("|"+s+":"+st.toString()+"|");
-				});
-				System.out.println("]");
-			}
-			else System.out.println("[]");
-		}
-
-		 */
 	}
 
 }

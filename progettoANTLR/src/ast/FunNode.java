@@ -34,7 +34,7 @@ public class FunNode implements Node {
         ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
         nesting = _nesting;
 
-        if (ST.lookup(id, false) != null)
+        if (ST.lookup(id, true, false) != null)
             errors.add(new SemanticError("Function identifier " + id + " already declared"));
         else {
             HashMap<String, STentry> HM = new HashMap<String, STentry>();

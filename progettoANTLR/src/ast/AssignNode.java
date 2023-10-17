@@ -25,20 +25,18 @@ public class AssignNode implements Node {
 
     @Override
     public ArrayList<SemanticError> checkSemantics(SymbolTable ST, int _nesting) {
-        System.out.println("S-C assign");
         ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
         nesting = _nesting;
 
         errors.addAll(exp.checkSemantics(ST, nesting));
 
         try {
-            STentry entry = ST.lookup(id, false);
+            STentry entry = ST.lookup(id, false, true);
             if(entry == null)
                 errors.add(new SemanticError("Id " + id + " not declared"));
             else
                 type = entry.getType();
-                System.out.println("Id " + id + " has type: " + entry.getType());
-        } catch (Exception e) {
+            } catch (Exception e) {
             errors.add(new SemanticError(e.getMessage()));
         }
 
@@ -47,11 +45,10 @@ public class AssignNode implements Node {
 
     @Override
     public Type typeCheck() {
-        System.out.println("T-C assign");
         if (exp.typeCheck().getClass().equals(type.getClass())) {
             return null;
         } else {
-            System.out.println("Wrong type for assignment of" + id);
+            System.out.println("[X] ERROR: Wrong type for assignment of " + id);
             ErrorType err = new ErrorType();
             err.setMessage("Wrong type for assignment of " + id);
             return  err;
