@@ -37,7 +37,7 @@ public class STentry {
 
 	public Boolean isInitialized() { return initialized ; }
 
-	public void setInit() { initialized = true; }
+	public void setInit(boolean init) { initialized = init; }
 	public String toPrint(){
 		return "|"+nesting+"|"+offset+"|"+label+"|"+type.toPrint("");
 	}

@@ -32,9 +32,15 @@ public class SymbolTable {
 			if (T != null) found = true ;
 			else n = n-1 ;
 		}
+
 		if (found && initializing) {
-			T.setInit();
+			T.setInit(true);
 		}
+
+		if (!found && !declaring) {
+			System.out.println("[X] ERROR: Symbol "+ id + " must be declared before use");
+		}
+
 		if (found && !initializing && !declaring && !T.isInitialized()) {
 			System.out.println("[X] ERROR: Symbol "+ id + " must be initialized before use");
 		}
@@ -85,7 +91,80 @@ public class SymbolTable {
 		offs = offs + 1 ;
 		offset.add(offs) ;	
 	}
+/*
+	public SymbolTable saveSymbolTable() {
+		SymbolTable newST = new SymbolTable();
+		ArrayList<HashMap<String, STentry>> hashMapNewST = new ArrayList<>();
+		ArrayList<Integer> offsetNewST = new ArrayList<>();
 
+		for (HashMap<String, STentry> s : this.symbol_table) {
+			HashMap<String, STentry> h = new HashMap<>();
+			for (String k : s.keySet()) {
+				STentry savedKey = s.get(k);
+				STentry savedValue = new STentry(savedKey.getType(), savedKey.getOffset(),
+						savedKey.getNesting(), savedKey.getLabel(), savedKey.isInitialized());
+				h.put(k, savedValue);
+			}
+			hashMapNewST.add(h);
+		}
+		newST.symbol_table = hashMapNewST;
+
+		for (Integer o : this.offset) {
+			offsetNewST.add(o);
+		}
+
+		newST.offset = offsetNewST;
+
+		return newST;
+	}
+
+	private boolean contains(String key, STentry value) {
+		for (HashMap<String, STentry> hashMap : this.symbol_table) {
+			for (Map.Entry<String, STentry> entry : hashMap.entrySet()) {
+				STentry entryToCompare = entry.getValue();
+				if (entry.getKey().equals(key) && entryToCompare.equals(value)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public ArrayList<HashMap<String, STentry>> intersectSymbolTables(SymbolTable otherTable) {
+		ArrayList<HashMap<String, STentry>> intersection = new ArrayList<>();
+
+		for (HashMap<String, STentry> hashMap : symbol_table) {
+			HashMap<String, STentry> intersectionHashMap = new HashMap<>();
+
+			for (Map.Entry<String, STentry> entry : hashMap.entrySet()) {
+				String key = entry.getKey();
+				STentry value = entry.getValue();
+
+				if (otherTable.contains(key, value)) {
+					intersectionHashMap.put(key, value);
+				}
+			}
+
+			if (!intersectionHashMap.isEmpty()) {
+				intersection.add(intersectionHashMap);
+			}
+		}
+
+		return intersection;
+	}
+
+	public void mergeSymbolTable(ArrayList<HashMap<String, STentry>> otherST) throws Exception {
+		for (HashMap<String, STentry> otherHashMap : otherST) {
+			for (String key : otherHashMap.keySet()) {
+				STentry otherEntry = otherHashMap.get(key);
+
+				STentry toReplace = lookup(key, true, false);
+				toReplace.setInitialized(otherEntry.isInitialized());
+				//HashMap<String, STentry> currentHashMap = symbol_table.get(nesting());
+				//currentHashMap.put(key, otherEntry);
+			}
+		}
+	}
 	public void toPrint(String fun, int nesting){
 		System.out.println("--------------------------------");
 		System.out.println("ST"+nesting+": "+fun);
@@ -100,5 +179,5 @@ public class SymbolTable {
 			else System.out.println("[]");
 		}
 	}
-
+ */
 }

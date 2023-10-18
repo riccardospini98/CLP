@@ -12,18 +12,18 @@ import java.util.ArrayList;
 
 public class IfStmNode implements Node {
     private Node guard;
-    private ArrayList<Node> thenbranch;
-    private ArrayList<Node> elsebranch;
+    private ArrayList<Node> thenBranch;
+    private ArrayList<Node> elseBranch;
 
-    public IfStmNode(Node _guard, ArrayList<Node> _thenbranch, ArrayList<Node> _elsebranch) {
+    public IfStmNode(Node _guard, ArrayList<Node> _thenBranch, ArrayList<Node> _elseBranch) {
         guard = _guard;
-        thenbranch = _thenbranch;
-        elsebranch = _elsebranch;
+        thenBranch = _thenBranch;
+        elseBranch = _elseBranch;
     }
 
-    public IfStmNode(Node _guard, ArrayList<Node> _thenbranch) {
+    public IfStmNode(Node _guard, ArrayList<Node> _thenBranch) {
         guard = _guard;
-        thenbranch = _thenbranch;
+        thenBranch = _thenBranch;
     }
 
     @Override
@@ -31,11 +31,11 @@ public class IfStmNode implements Node {
         ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
 
         errors.addAll(guard.checkSemantics(ST, _nesting));
-        for (Node thenB : thenbranch) {
-            errors.addAll(thenB.checkSemantics(ST, _nesting));
+        for (Node thenN : thenBranch) {
+            errors.addAll(thenN.checkSemantics(ST, _nesting));
         }
-        for (Node elseB : elsebranch) {
-            errors.addAll(elseB.checkSemantics(ST, _nesting));
+        for (Node elseN : elseBranch) {
+            errors.addAll(elseN.checkSemantics(ST, _nesting));
         }
         return errors;
     }
@@ -43,10 +43,10 @@ public class IfStmNode implements Node {
     @Override
     public Type typeCheck() {
         if (guard.typeCheck() instanceof BoolType) {
-            for (Node thenB : thenbranch) {
+            for (Node thenB : thenBranch) {
                 thenB.typeCheck();
             }
-            for (Node elseB : elsebranch) {
+            for (Node elseB : elseBranch) {
                 elseB.typeCheck();
             }
             return new VoidType();
@@ -73,11 +73,11 @@ public class IfStmNode implements Node {
         String thencode = "";
         String elsecode = "";
 
-        for (Node thenC : thenbranch) {
+        for (Node thenC : thenBranch) {
             thencode += thenC.codeGeneration();
         }
 
-        for (Node elseC : elsebranch) {
+        for (Node elseC : elseBranch) {
             elsecode += elseC.codeGeneration();
         }
 
@@ -97,11 +97,11 @@ public class IfStmNode implements Node {
         String thenstring = "";
         String elsestring = "";
 
-        for (Node thenS : thenbranch) {
+        for (Node thenS : thenBranch) {
             thenstring += thenS.toPrint(s + "  ");
         }
 
-        for (Node elseS : elsebranch) {
+        for (Node elseS : elseBranch) {
             elsestring += elseS.toPrint(s + "  ");
         }
 
