@@ -31,12 +31,24 @@ public class IfStmNode implements Node {
         ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
 
         errors.addAll(guard.checkSemantics(ST, _nesting));
+
+        SymbolTable thenST = new SymbolTable();
+        SymbolTable elseST = new SymbolTable();
         for (Node thenN : thenBranch) {
-            errors.addAll(thenN.checkSemantics(ST, _nesting));
+            errors.addAll(thenN.checkSemantics(thenST, _nesting));
         }
         for (Node elseN : elseBranch) {
-            errors.addAll(elseN.checkSemantics(ST, _nesting));
+            errors.addAll(elseN.checkSemantics(elseST, _nesting));
         }
+
+        //TODO: controllare e gestire
+        try {
+            ST.mergeSymbolTable(thenST.intersectSymbolTables(elseST));
+        } catch (Exception e) {
+            System.out.println("Error Merging ST....");
+            throw new RuntimeException(e);
+        }
+
         return errors;
     }
 
@@ -50,18 +62,10 @@ public class IfStmNode implements Node {
                 elseB.typeCheck();
             }
             return new VoidType();
-			/*
-			if (thenstm.getClass().equals(elsestm.getClass()))
-        		return thenstm;
-			else {
-        		System.out.println("Type Error: incompatible types in then and else branches");
-        		return new ErrorType() ;	
-			}
-			*/
         } else {
-            System.out.println("Type Error: non boolean condition in if");
+            System.out.println("Type Error: non boolean condition in if guard");
             ErrorType err = new ErrorType();
-            err.setMessage("Type Error: non boolean condition in if");
+            err.setMessage("Type Error: non boolean condition in if guard");
             return  err;
         }
     }

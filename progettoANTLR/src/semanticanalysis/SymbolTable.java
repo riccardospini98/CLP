@@ -6,6 +6,7 @@ import ast.Types.Type;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class SymbolTable {
 	private ArrayList<HashMap<String,STentry>>  symbol_table ;
@@ -91,7 +92,7 @@ public class SymbolTable {
 		offs = offs + 1 ;
 		offset.add(offs) ;	
 	}
-/*
+
 	public SymbolTable saveSymbolTable() {
 		SymbolTable newST = new SymbolTable();
 		ArrayList<HashMap<String, STentry>> hashMapNewST = new ArrayList<>();
@@ -159,9 +160,7 @@ public class SymbolTable {
 				STentry otherEntry = otherHashMap.get(key);
 
 				STentry toReplace = lookup(key, true, false);
-				toReplace.setInitialized(otherEntry.isInitialized());
-				//HashMap<String, STentry> currentHashMap = symbol_table.get(nesting());
-				//currentHashMap.put(key, otherEntry);
+				toReplace.setInit(otherEntry.isInitialized());
 			}
 		}
 	}
@@ -179,5 +178,4 @@ public class SymbolTable {
 			else System.out.println("[]");
 		}
 	}
- */
 }

@@ -7,7 +7,9 @@ import parser.SimpLanPlusParser;
 import semanticanalysis.SemanticError;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.BufferedWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -47,6 +49,7 @@ public class Main {
             return;
         }
         System.out.println("Parse completed with no errors!\nStarting semantic check...");
+
         // Creazione della tabella dei simboli
         SymbolTable ST = new SymbolTable();
         ArrayList<SemanticError> errors = AST.checkSemantics(ST, 0);
@@ -54,15 +57,18 @@ public class Main {
         if(!errors.isEmpty()) {
             System.out.println(ANSI_RED + "The semantic check found "+ errors.size()+" errors.");
             String semanticErrors ="";
-            for (SemanticError e: errors) {
-                semanticErrors += "[X] ERROR: Semantic error: " + e + "\n";
-                System.out.println(ANSI_RED + "[X] ERROR: Semantic error: " + e + "\n");
-                /*
-                BufferedWriter wr = new BufferedWriter(new FileWriter(OUTPUT_PATH));
-                wr.write(semanticErrors);
-                wr.flush();
-                wr.close();
-                 */
+            for (SemanticError err: errors) {
+                semanticErrors += "[X] ERROR: Semantic error: " + err + "\n";
+                System.out.println(ANSI_RED + "[X] ERROR: Semantic error: " + err + "\n");
+
+                try {
+                    BufferedWriter wr = new BufferedWriter(new FileWriter(OUTPUT_PATH));
+                    wr.write(semanticErrors);
+                    wr.flush();
+                    wr.close();
+                } catch (IOException e) {
+                    System.out.println("Exception while writing on output file: " + e);
+                }
                 return;
             }
         }

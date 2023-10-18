@@ -1,7 +1,7 @@
 int a; int b; int c;
 a =2;
 b= 3;
-if (a < 1) {
+iff (a < 1) {
     c = b;
 } else {
     b=3;

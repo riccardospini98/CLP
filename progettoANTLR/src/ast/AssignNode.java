@@ -11,7 +11,6 @@ import java.util.ArrayList;
 public class AssignNode implements Node {
 
     private String id;
-
     private Type type;
     private Node exp;
 
