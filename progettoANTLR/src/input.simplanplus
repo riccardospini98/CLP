@@ -1,10 +1,10 @@
 int a; int b; int c;
-a =2;
-b= 3;
-iff (a < 1) {
-    c = b;
-} else {
-    b=3;
+
+a = 2;
+
+if (a < 1) {
+    b = 3;
 }
-a = c;
+a = b;
+a
 // ERRORE perche` b e` usata ma non inizializzata

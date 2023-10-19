@@ -32,7 +32,7 @@ public class AssignNode implements Node {
         try {
             STentry entry = ST.lookup(id, false, true);
             if(entry == null)
-                errors.add(new SemanticError("Id " + id + " not declared"));
+                errors.add(new SemanticError("ID \"" + id + "\" used but not declared"));
             else
                 type = entry.getType();
             } catch (Exception e) {

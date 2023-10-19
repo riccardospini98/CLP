@@ -122,8 +122,9 @@ public class SymbolTable {
 	private boolean contains(String key, STentry value) {
 		for (HashMap<String, STentry> hashMap : this.symbol_table) {
 			for (Map.Entry<String, STentry> entry : hashMap.entrySet()) {
-				STentry entryToCompare = entry.getValue();
-				if (entry.getKey().equals(key) && entryToCompare.equals(value)) {
+				boolean cond1 = entry.getKey().equals(key);
+				boolean cond2 = entry.getValue().equals(value);
+				if (cond1 && cond2) {
 					return true;
 				}
 			}
@@ -164,9 +165,9 @@ public class SymbolTable {
 			}
 		}
 	}
-	public void toPrint(String fun, int nesting){
+	public void toPrint(String msg, int nesting){
 		System.out.println("--------------------------------");
-		System.out.println("ST"+nesting+": "+fun);
+		System.out.println("ST" + nesting + ": " + msg);
 		for(HashMap<String,STentry> h : symbol_table){
 			if(h.size()>0){
 				System.out.println("[");

@@ -2,6 +2,8 @@ package semanticanalysis;
 
 import ast.Types.Type;
 
+import java.util.Objects;
+
 public class STentry {
 	private Type type ;
 	private int offset ;
@@ -18,7 +20,15 @@ public class STentry {
 		initialized = _initialized ;
 
 	}
-	
+
+	public boolean equals(STentry other) {
+		return Objects.equals(this.label, other.label) &&
+				this.offset == other.offset &&
+				this.initialized == other.initialized &&
+				this.type == other.type &&
+				this.nesting == other.nesting;
+	}
+
 	public Type getType() {
 		return type ;
 	}

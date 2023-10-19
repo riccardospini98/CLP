@@ -4,24 +4,26 @@ import ast.Types.BoolType;
 import ast.Types.ErrorType;
 import ast.Types.Type;
 import evaluator.SimpLanlib;
+import semanticanalysis.STentry;
 import semanticanalysis.SemanticError;
 import semanticanalysis.SymbolTable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class IfExpNode implements Node {
     private Node guard;
-    private ArrayList<Node> thenbranch;
-    private ArrayList<Node> elsebranch;
+    private ArrayList<Node> thenBranch;
+    private ArrayList<Node> elseBranch;
     private Node thenExp;
-    private Node elseExp        ;
+    private Node elseExp;
 
-    public IfExpNode(Node guard, ArrayList<Node> thenbranch, Node thenExpbranch, ArrayList<Node> elsebranch, Node elseExpbranch) {
+    public IfExpNode(Node guard, ArrayList<Node> thenBranch, Node thenExp, ArrayList<Node> elseBranch, Node elseExp) {
         this.guard = guard;
-        this.thenbranch = thenbranch;
-        this.thenExp = thenExpbranch;
-        this.elsebranch = elsebranch;
-        this.elseExp = elseExpbranch;
+        this.thenBranch = thenBranch;
+        this.thenExp = thenExp;
+        this.elseBranch = elseBranch;
+        this.elseExp = elseExp;
     }
 
 
@@ -30,32 +32,46 @@ public class IfExpNode implements Node {
         ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
         errors.addAll(guard.checkSemantics(ST, _nesting));
 
-        for (Node thenB : thenbranch) {
-            errors.addAll(thenB.checkSemantics(ST, _nesting));
-        }
-        errors.addAll(thenExp.checkSemantics(ST, _nesting));
+        SymbolTable thenST = ST.saveSymbolTable();
+        SymbolTable elseST = ST.saveSymbolTable();
 
-        for (Node elseB : elsebranch) {
-            errors.addAll(elseB.checkSemantics(ST, _nesting));
+        if (thenBranch != null) {
+            for (Node thenB : thenBranch) {
+                errors.addAll(thenB.checkSemantics(thenST, _nesting));
+            }
         }
-        errors.addAll(elseExp.checkSemantics(ST, _nesting));
+        errors.addAll(thenExp.checkSemantics(thenST, _nesting));
+        if (elseBranch != null) {
+            for (Node elseB : elseBranch) {
+                errors.addAll(elseB.checkSemantics(elseST, _nesting));
+            }
+        }
+        errors.addAll(elseExp.checkSemantics(elseST, _nesting));
+
+        ArrayList<HashMap<String, STentry>> intersect = thenST.intersectSymbolTables(elseST);
+        try {
+            ST.mergeSymbolTable(intersect);
+        } catch (Exception e) {
+            System.out.println("Error Merging ST....");
+            throw new RuntimeException(e);
+        }
+
         return errors;
     }
 
     @Override
     public Type typeCheck() {
         if (guard.typeCheck() instanceof BoolType) {
-            if (thenbranch != null) {
-                for (Node thenB : thenbranch) {
+            if (thenBranch != null) {
+                for (Node thenB : thenBranch) {
                     thenB.typeCheck();
                 }
             }
-            if (elsebranch != null) {
-                for (Node elseB : elsebranch) {
+            if (elseBranch != null) {
+                for (Node elseB : elseBranch) {
                     elseB.typeCheck();
                 }
             }
-
             Type thenExpType = thenExp.typeCheck();
             Type elseExpType = elseExp.typeCheck();
             if (thenExpType.getClass().equals(elseExpType.getClass()))
@@ -64,13 +80,13 @@ public class IfExpNode implements Node {
                 System.out.println("Type Error: incompatible types in then and else branches");
                 ErrorType err = new ErrorType();
                 err.setMessage("Type Error: incompatible types in then and else branches");
-                return  err;
+                return err;
             }
         } else {
             System.out.println("Type Error: non boolean condition in if");
             ErrorType err = new ErrorType();
             err.setMessage("Type Error: non boolean condition in if");
-            return  err;
+            return err;
         }
     }
 
@@ -81,11 +97,11 @@ public class IfExpNode implements Node {
         String thencode = "";
         String elsecode = "";
 
-        for (Node thenC : thenbranch) {
+        for (Node thenC : thenBranch) {
             thencode += thenC.codeGeneration();
         }
 
-        for (Node elseC : elsebranch) {
+        for (Node elseC : elseBranch) {
             elsecode += elseC.codeGeneration();
         }
 
@@ -104,11 +120,11 @@ public class IfExpNode implements Node {
         String thenstring = "";
         String elsestring = "";
 
-        for (Node thenS : thenbranch) {
+        for (Node thenS : thenBranch) {
             thenstring += thenS.toPrint(s + "  ");
         }
 
-        for (Node elseS : elsebranch) {
+        for (Node elseS : elseBranch) {
             elsestring += elseS.toPrint(s + "  ");
         }
 

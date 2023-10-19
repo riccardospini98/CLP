@@ -5,10 +5,13 @@ import ast.Types.ErrorType;
 import ast.Types.Type;
 import ast.Types.VoidType;
 import evaluator.SimpLanlib;
+import org.stringtemplate.v4.ST;
+import semanticanalysis.STentry;
 import semanticanalysis.SemanticError;
 import semanticanalysis.SymbolTable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class IfStmNode implements Node {
     private Node guard;
@@ -28,22 +31,32 @@ public class IfStmNode implements Node {
 
     @Override
     public ArrayList<SemanticError> checkSemantics(SymbolTable ST, int _nesting) {
-        ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
-
+        ArrayList<SemanticError> errors = new ArrayList<>();
         errors.addAll(guard.checkSemantics(ST, _nesting));
 
-        SymbolTable thenST = new SymbolTable();
-        SymbolTable elseST = new SymbolTable();
-        for (Node thenN : thenBranch) {
-            errors.addAll(thenN.checkSemantics(thenST, _nesting));
+        SymbolTable thenST = ST.saveSymbolTable();
+        SymbolTable elseST = ST.saveSymbolTable();
+        ArrayList<HashMap<String, STentry>> intersect;
+        if (thenBranch != null) {
+            for (Node thenN : thenBranch) {
+                errors.addAll(thenN.checkSemantics(thenST, _nesting));
+            }
         }
-        for (Node elseN : elseBranch) {
-            errors.addAll(elseN.checkSemantics(elseST, _nesting));
+        if (elseBranch != null) {
+            for (Node elseN : elseBranch) {
+                errors.addAll(elseN.checkSemantics(elseST, _nesting));
+            }
+            intersect = thenST.intersectSymbolTables(elseST);
+            // Nel caso in cui l'if non abbia un ramo else e una variabile venga
+            // inizializzata solo nle corpo dell'if, lo considero un errore di
+            // variabile usata ma non inizializzata (se viene usata ovviamente).
+        } else {
+            // La intersect prende i valori della ST su cui viene invocata,
+            // non di quella passata come parametro.
+            intersect = ST.intersectSymbolTables(thenST);
         }
-
-        //TODO: controllare e gestire
         try {
-            ST.mergeSymbolTable(thenST.intersectSymbolTables(elseST));
+            ST.mergeSymbolTable(intersect);
         } catch (Exception e) {
             System.out.println("Error Merging ST....");
             throw new RuntimeException(e);
@@ -58,15 +71,16 @@ public class IfStmNode implements Node {
             for (Node thenB : thenBranch) {
                 thenB.typeCheck();
             }
-            for (Node elseB : elseBranch) {
-                elseB.typeCheck();
-            }
+            if (elseBranch != null)
+                for (Node elseB : elseBranch) {
+                    elseB.typeCheck();
+                }
             return new VoidType();
         } else {
             System.out.println("Type Error: non boolean condition in if guard");
             ErrorType err = new ErrorType();
             err.setMessage("Type Error: non boolean condition in if guard");
-            return  err;
+            return err;
         }
     }
 
@@ -80,10 +94,10 @@ public class IfStmNode implements Node {
         for (Node thenC : thenBranch) {
             thencode += thenC.codeGeneration();
         }
-
-        for (Node elseC : elseBranch) {
-            elsecode += elseC.codeGeneration();
-        }
+        if (elseBranch != null)
+            for (Node elseC : elseBranch) {
+                elsecode += elseC.codeGeneration();
+            }
 
         return guard.codeGeneration() +
                 "storei T1 1 \n" +

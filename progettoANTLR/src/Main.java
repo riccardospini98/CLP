@@ -36,15 +36,20 @@ public class Main {
         CustomErrorListener errorListener = new CustomErrorListener(parserErrors);
 
         // Aggiungi un listener personalizzato per l'analisi dell'albero del parser
+        // Vogliamo solo gli errori lessicali in output
+        lexer.removeErrorListeners();
+        lexer.addErrorListener(errorListener);
+
+        // Se volessimo anche quelli sintattici, basterebbe scommentare queste righe
         parser.removeErrorListeners();
         parser.addErrorListener(errorListener);
 
         // Esegui l'analisi del programma
         Node AST = visitor.visit(parser.prog());
         System.out.println("Parsing started...");
-        //Errori di sintassi
         if (!parserErrors.isEmpty()) {
-            System.out.println(ANSI_RED + "[X] ERROR: Ci sono errori di sintassi nel programma.");
+            //Errori di sintassi
+            System.out.println(ANSI_RED + "[X] ERROR: Syntax error(s) found in program.\n\tCheck output file for additional information.");
             errorListener.writeOnFile(OUTPUT_PATH);
             return;
         }
@@ -53,6 +58,7 @@ public class Main {
         // Creazione della tabella dei simboli
         SymbolTable ST = new SymbolTable();
         ArrayList<SemanticError> errors = AST.checkSemantics(ST, 0);
+
         //Errori semantici sugli identificatori
         if(!errors.isEmpty()) {
             System.out.println(ANSI_RED + "The semantic check found "+ errors.size()+" errors.");
@@ -89,7 +95,7 @@ public class Main {
                 f.createNewFile();
             }
 
-            System.out.println(ANSI_RED + "Found"+ parserErrors.size() +"parser errors: ");
+            System.out.println(ANSI_RED + "[X] ERROR: Found"+ parserErrors.size() +" parser errors.\n\tCheck output file for additional information. ");
 
             for (String error : parserErrors) {
                 Files.write(Paths.get(OUTPUT_PATH), (error + "\n").getBytes(), StandardOpenOption.APPEND);

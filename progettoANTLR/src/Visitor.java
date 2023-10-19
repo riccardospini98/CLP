@@ -141,7 +141,7 @@ public class Visitor extends SimpLanPlusBaseVisitor<Node>{
         for (SimpLanPlusParser.StmContext stm: ctx.thenStm().stm()) {
             thenStm.add(visit(stm));
         }
-        if ( ctx.elseStm() != null) {
+        if (ctx.elseStm() != null) {
             for (SimpLanPlusParser.StmContext stm: ctx.elseStm().stm()) {
                 elseStm.add(visit(stm));
             }
@@ -183,16 +183,17 @@ public class Visitor extends SimpLanPlusBaseVisitor<Node>{
     @Override
     public Node visitIfThenElse(SimpLanPlusParser.IfThenElseContext ctx) {
         System.out.println("ITE");
-        ArrayList<Node> _stm1 = new ArrayList<Node>() ;
-        ArrayList<Node> _stm2 = new ArrayList<Node>() ;
+        ArrayList<Node> thenStm = new ArrayList<Node>() ;
+        ArrayList<Node> elseStm = new ArrayList<Node>() ;
 
-        for (SimpLanPlusParser.StmContext st : ctx.ifBranch().stm())
-            _stm1.add( visit(st) );
+        if(ctx.ifBranch().stm() != null)
+            for (SimpLanPlusParser.StmContext st : ctx.ifBranch().stm())
+                thenStm.add( visit(st) );
+        if(ctx.elseBranch().stm() != null)
+            for (SimpLanPlusParser.StmContext st : ctx.elseBranch().stm())
+                elseStm.add( visit(st) );
 
-        for (SimpLanPlusParser.StmContext st : ctx.elseBranch().stm())
-            _stm2.add( visit(st) );
-
-        return new IfExpNode(visit(ctx.guard), _stm1, visit(ctx.ifBranch().exp()), _stm2, visit(ctx.elseBranch().exp()));
+        return new IfExpNode(visit(ctx.guard), thenStm, visit(ctx.ifBranch().exp()), elseStm, visit(ctx.elseBranch().exp()));
     }
 
     /**
