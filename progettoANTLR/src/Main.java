@@ -1,15 +1,16 @@
+import SVM.SVMLexer;
+import SVM.SVMParser;
 import ast.Types.ErrorType;
 import ast.Node;
 
+import evaluator.AssemblyClass;
+import evaluator.ExecuteVM;
 import org.antlr.v4.runtime.*;
 import parser.SimpLanPlusLexer;
 import parser.SimpLanPlusParser;
 import semanticanalysis.SemanticError;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.BufferedWriter;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -104,5 +105,26 @@ public class Main {
             Files.deleteIfExists(Paths.get(OUTPUT_PATH));
             Files.write(Paths.get(OUTPUT_PATH), ("").getBytes(), StandardOpenOption.CREATE_NEW);
         }
+
+        // CODE GENERATION  input.simplanplus.asm
+        String code=AST.codeGeneration();
+        BufferedWriter out = new BufferedWriter(new FileWriter(INPUT_PATH+".asm"));
+        out.write(code);
+        out.close();
+        System.out.println("Code generated! Assembling and running generated code.");
+
+        FileInputStream isASM = new FileInputStream(INPUT_PATH+".asm");
+        ANTLRInputStream inputASM = new ANTLRInputStream(isASM);
+        SVMLexer lexerASM = new SVMLexer(inputASM);
+        CommonTokenStream tokensASM = new CommonTokenStream(lexerASM);
+        SVMParser parserASM = new SVMParser(tokensASM);
+
+        SVMVisitor visitorSVM = new SVMVisitor();
+        visitorSVM.visit(parserASM.assembly());
+
+        System.out.println("Starting Virtual Machine...");
+        ExecuteVM vm = new ExecuteVM(visitorSVM.code);
+        vm.cpu();
+
     }
 }

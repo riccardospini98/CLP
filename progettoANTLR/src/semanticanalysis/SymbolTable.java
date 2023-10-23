@@ -85,7 +85,7 @@ public class SymbolTable {
 		offset.add(offs) ;	
 	}
 
-	public void increaseoffset() {
+	public void increaseOffset() {
 		int n = offset.size() - 1 ;
 		int offs = offset.get(n) ;
 		offset.remove(n) ;

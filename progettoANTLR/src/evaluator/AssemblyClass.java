@@ -20,37 +20,6 @@ public class AssemblyClass {
     public void setCode(int _code) {
         code = _code;
     }
-  /*  
-    AssemblyClass assemblyClass(String o) {
-        this.operation = o;
-        return this;
-    }
-
-    AssemblyClass assemblyClass(String o, String a1) {
-        this.operation = o;
-        this.arg1 = a1;
-        return this;
-    }
-
-    AssemblyClass assemblyClass(String o, String a1, String a2) {
-        this.operation = o;
-        this.arg1 = a1;
-        this.arg2 = a2;
-        return this;
-    }
-
-    AssemblyClass AssemblyClass(String o, String a1, String a2, String a3) {
-        this.operation = o;
-        this.arg1 = a1;
-        this.arg2 = a2;
-        this.arg3 = a3;
-        return this;
-    }
-*/
-
-//   public String getOperation() {
-//      return operation;
-//   }
 
     public String getArg1() {
         return arg1;

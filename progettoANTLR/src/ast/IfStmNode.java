@@ -48,7 +48,7 @@ public class IfStmNode implements Node {
             }
             intersect = thenST.intersectSymbolTables(elseST);
             // Nel caso in cui l'if non abbia un ramo else e una variabile venga
-            // inizializzata solo nle corpo dell'if, lo considero un errore di
+            // inizializzata solo nel corpo dell'if, lo considero un errore di
             // variabile usata ma non inizializzata (se viene usata ovviamente).
         } else {
             // La intersect prende i valori della ST su cui viene invocata,

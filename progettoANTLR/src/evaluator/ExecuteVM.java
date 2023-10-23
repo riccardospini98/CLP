@@ -24,7 +24,7 @@ public class ExecuteVM {
     }
  
  
-    public void StampaMem(int _j){
+    public void stampMem(int _j){
     		System.out.print(_j + ": " + code[ip].getCode()) ;
     		for (int i = MEMSIZE-1; i > sp ; i--){
     			System.out.print("\t" + memory[i]) ; 			
@@ -102,7 +102,7 @@ public class ExecuteVM {
     	int j = 0 ;
  
     	while ( true ) {
-    	    StampaMem(j) ; j=j+1 ;
+    	    stampMem(j) ; j=j+1 ;
     	  	AssemblyClass bytecode = code[ip] ; // fetch
             int tmp ;
             int address;

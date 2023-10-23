@@ -51,7 +51,7 @@ public class FunNode implements Node {
 
             type = new ArrowType(partypes, returntype);
 
-            ST.increaseoffset(); // aumentiamo di 1 l'offset per far posto al return value
+            ST.increaseOffset(); // aumentiamo di 1 l'offset per far posto al return value
 
             errors.addAll(body.checkSemantics(ST, nesting + 1));
             ST.remove();

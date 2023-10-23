@@ -1,5 +1,6 @@
-package ast;
+package ast.ExpNodes;
 
+import ast.Node;
 import ast.Types.BoolType;
 import ast.Types.ErrorType;
 import ast.Types.IntType;
