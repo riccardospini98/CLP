@@ -16,12 +16,11 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import semanticanalysis.SymbolTable;
 
 public class Main {
-
-    public static final String ANSI_RED = "\u001B[31m";
     static String INPUT_PATH = "progettoANTLR/src/input.simplanplus";
     static String OUTPUT_PATH = "progettoANTLR/out/errors.txt";
 
@@ -50,7 +49,7 @@ public class Main {
         System.out.println("Parsing started...");
         if (!parserErrors.isEmpty()) {
             //Errori di sintassi
-            System.out.println(ANSI_RED + "[X] ERROR: Syntax error(s) found in program.\n\tCheck output file for additional information.");
+            System.err.println("[X] ERROR: Syntax error(s) found in program.\n\tCheck output file for additional information.");
             errorListener.writeOnFile(OUTPUT_PATH);
             return;
         }
@@ -58,15 +57,28 @@ public class Main {
 
         // Creazione della tabella dei simboli
         SymbolTable ST = new SymbolTable();
-        ArrayList<SemanticError> errors = AST.checkSemantics(ST, 0);
+        ArrayList<SemanticError> SErrors = AST.checkSemantics(ST, 0);
+        ArrayList<SemanticError> STErrors = ST.getErrors();
+        ArrayList<SemanticError> errors = new ArrayList<>();
+        System.out.println(SErrors + " " + STErrors);
+        if (!SErrors.isEmpty()) {
+            errors.addAll(SErrors);
+            System.out.println("OOOOOOOOOOOOO");
+        }
+        if (!STErrors.isEmpty()) {
+            errors.addAll(STErrors);
+            System.out.println("YYYYYYYYYYYY");
+        }
+
 
         //Errori semantici sugli identificatori
         if(!errors.isEmpty()) {
-            System.out.println(ANSI_RED + "The semantic check found "+ errors.size()+" errors.");
+            System.err.println("The semantic check found "+ errors.size() +" errors.");
             String semanticErrors ="";
+
             for (SemanticError err: errors) {
-                semanticErrors += "[X] ERROR: Semantic error: " + err + "\n";
-                System.out.println(ANSI_RED + "[X] ERROR: Semantic error: " + err + "\n");
+                semanticErrors += "[X] ERROR-SemanticError: " + err + "\n";
+                System.err.println("[X] ERROR-SemanticError: " + err + "\n");
 
                 try {
                     BufferedWriter wr = new BufferedWriter(new FileWriter(OUTPUT_PATH));
@@ -74,16 +86,16 @@ public class Main {
                     wr.flush();
                     wr.close();
                 } catch (IOException e) {
-                    System.out.println("Exception while writing on output file: " + e);
+                    System.err.println("Exception while writing on output file: " + e);
                 }
-                return;
+                System.exit(1);
             }
         }
 
         System.out.println("Checking type errors...");
         Node type = AST.typeCheck();
         if (type instanceof ErrorType)
-            System.out.println(ANSI_RED + "[X] ERROR: Type checking is WRONG!\n\t" + ((ErrorType) type).getMessage());
+            System.err.println("[X] ERROR: Type checking is WRONG!\n\t" + ((ErrorType) type).getMessage());
         else
             System.out.println(type.toPrint("Type checking ok! Type of the program is: "));
 
@@ -96,7 +108,7 @@ public class Main {
                 f.createNewFile();
             }
 
-            System.out.println(ANSI_RED + "[X] ERROR: Found"+ parserErrors.size() +" parser errors.\n\tCheck output file for additional information. ");
+            System.err.println("[X] ERROR: Found"+ parserErrors.size() +" parser errors.\n\tCheck output file for additional information. ");
 
             for (String error : parserErrors) {
                 Files.write(Paths.get(OUTPUT_PATH), (error + "\n").getBytes(), StandardOpenOption.APPEND);

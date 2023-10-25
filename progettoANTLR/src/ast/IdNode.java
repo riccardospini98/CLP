@@ -34,9 +34,9 @@ public class IdNode implements Node {
 	@Override
 	public Type typeCheck () {
 		if (type.getType() instanceof ArrowType) { //
-			System.out.println("Wrong usage of function identifier");
+			System.err.println("[X] ERROR-TypeError:  Wrong usage of function identifier");
 			ErrorType err = new ErrorType();
-			err.setMessage("Wrong usage of function identifier");
+			err.setMessage("[X] ERROR-TypeError:  Wrong usage of function identifier");
 			return  err;
 		} else return type.getType() ;
 	}
@@ -47,7 +47,7 @@ public class IdNode implements Node {
 		for (int i = 0; i < nesting - type.getNesting(); i++)
 	    	 getAR += "store T1 0(T1) \n";
 	    return 
-		       "move AL T1 \n"
+		       "//IDNode\nmove AL T1 \n"
 		       + getAR  //risalgo la catena statica
 		       + "subi T1 " + type.getOffset() +"\n" //metto offset sullo stack
 			   + "store A0 0(T1) \n" ; //carico sullo stack il valore all'indirizzo ottenuto

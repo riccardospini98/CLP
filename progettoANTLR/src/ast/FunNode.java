@@ -69,9 +69,9 @@ public class FunNode implements Node {
         if ((body.typeCheck()).getClass().equals(returntype.getClass()))
             return null;
         else {
-            System.out.println("Wrong return type for function " + id);
+            System.err.println("[X] ERROR-TypeError:  Wrong return type for function " + id);
             ErrorType err = new ErrorType();
-            err.setMessage("Wrong return type for function " + id);
+            err.setMessage("[X] ERROR-TypeError:  Wrong return type for function " + id);
             return err;
         }
     }
@@ -79,7 +79,7 @@ public class FunNode implements Node {
     @Override
     public String codeGeneration() {
 
-        SimpLanlib.putCode(flabel + ":\n"
+        SimpLanlib.putCode("//FunNode\n"+flabel + ":\n"
                 + "pushr RA \n"
                 + body.codeGeneration()
                 + "popr RA \n"

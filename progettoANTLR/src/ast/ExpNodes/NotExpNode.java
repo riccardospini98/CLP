@@ -26,12 +26,12 @@ public class NotExpNode implements Node {
 
     @Override
     public Type typeCheck() {
-        if (exp instanceof BoolType) {
+        if (exp.typeCheck() instanceof BoolType) {
             return new BoolType();
         } else {
-            System.out.println("Type Error: type not allowed in not expression");
+            System.err.println("[X] ERROR-TypeError:  type not allowed in not expression");
             ErrorType err = new ErrorType();
-            err.setMessage("Type Error: type not allowed in not expression");
+            err.setMessage("[X] ERROR-TypeError:  type not allowed in not expression");
             return  err;
         }
     }
@@ -40,7 +40,7 @@ public class NotExpNode implements Node {
     public String codeGeneration() {
         String ltrue = SimpLanlib.freshLabel();
         String lend = SimpLanlib.freshLabel();
-        return exp.codeGeneration() +
+        return "//NotNode\n"+exp.codeGeneration() +
                 "storei T1 1 \n" +
                 "beq A0 T1 " + ltrue + "\n" +
                 //Se sono diversi allora ho 1 e 0 allora metto 1 in A0

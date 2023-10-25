@@ -58,7 +58,7 @@ public class IfStmNode implements Node {
         try {
             ST.mergeSymbolTable(intersect);
         } catch (Exception e) {
-            System.out.println("Error Merging ST....");
+            System.err.println("Error Merging ST....");
             throw new RuntimeException(e);
         }
 
@@ -77,7 +77,7 @@ public class IfStmNode implements Node {
                 }
             return new VoidType();
         } else {
-            System.out.println("Type Error: non boolean condition in if guard");
+            System.err.println("[X] ERROR-TypeError:  non boolean condition in if guard");
             ErrorType err = new ErrorType();
             err.setMessage("Type Error: non boolean condition in if guard");
             return err;
@@ -99,7 +99,7 @@ public class IfStmNode implements Node {
                 elsecode += elseC.codeGeneration();
             }
 
-        return guard.codeGeneration() +
+        return "//IfStm\n"+guard.codeGeneration() +
                 "storei T1 1 \n" +
                 "beq A0 T1 " + labelthen + "\n" +
                 elsecode +

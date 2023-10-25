@@ -41,9 +41,9 @@ public class CallNode implements Node {
         if (_type instanceof ArrowType) {
             ArrayList<Type> _partype = ((ArrowType) _type).get_inputtype();
             if (_partype.size() != parameters.size()) {
-                System.out.println("Wrong number of parameters in the invocation of " + id);
+                System.err.println("[X] ERROR: Wrong number of parameters in the invocation of " + id);
                 ErrorType err = new ErrorType();
-                err.setMessage("Wrong number of parameters in the invocation of " + id);
+                err.setMessage("[X] ERROR: Wrong number of parameters in the invocation of " + id);
                 return err;
             } else {
                 boolean ok = true;
@@ -51,8 +51,8 @@ public class CallNode implements Node {
                 for (int i = 0; i < parameters.size(); i++) {
                     Type par_i = (parameters.get(i)).typeCheck();
                     if (!(par_i.getClass().equals(_partype.get(i).getClass()))) {
-                        System.out.println("Wrong type for " + (i + 1) + "-th parameter in the invocation of " + id);
-                        errorMsg += "Wrong type for " + (i + 1) + "-th parameter in the invocation of " + id + "\n";
+                        System.err.println("[X] ERROR-TypeError: Wrong type for " + (i + 1) + "-th parameter in the invocation of " + id);
+                        errorMsg += "[X] ERROR-TypeError: Wrong type for " + (i + 1) + "-th parameter in the invocation of " + id + "\n";
                         ok = false;
                     }
                 }
@@ -64,9 +64,9 @@ public class CallNode implements Node {
                 }
             }
         } else {
-            System.out.println("Invocation of a non-function " + id);
+            System.err.println("[X] ERROR-TypeError: Invocation of a non-function " + id);
             ErrorType err = new ErrorType();
-            err.setMessage("Invocation of a non-function " + id);
+            err.setMessage("[X] ERROR-TypeError: Invocation of a non-function " + id);
             return err;
         }
     }
@@ -82,7 +82,7 @@ public class CallNode implements Node {
             getAR += "store T1 0(T1) \n";
         // formato AR: control_link + access link + parameters + indirizzo di ritorno + dich_locali
 
-        return "pushr FP \n"            // carico il frame pointer
+        return "//CallNode\npushr FP \n"            // carico il frame pointer
                 + "move SP FP \n"
                 + "addi FP 1 \n"    // salvo in FP il puntatore all'indirizzo del frame pointer caricato
                 + "move AL T1\n"        // risalgo la catena statica

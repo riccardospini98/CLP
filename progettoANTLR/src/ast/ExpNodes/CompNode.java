@@ -38,9 +38,9 @@ public class CompNode implements Node {
         if ((leftOp instanceof IntType) && (rightOp instanceof IntType)) {
             return new BoolType();
         } else {
-            System.out.println("Type Error: incompatible types in left and right operands");
+            System.err.println("[X] ERROR-TypeError:  incompatible types in left and right operands");
             ErrorType err = new ErrorType();
-            err.setMessage("Type Error: incompatible types in left and right operands");
+            err.setMessage("[X] ERROR-TypeError:  incompatible types in left and right operands");
             return  err;
         }
     }
@@ -50,7 +50,7 @@ public class CompNode implements Node {
         String ltrue = SimpLanlib.freshLabel();
         String lend = SimpLanlib.freshLabel();
         String leq = SimpLanlib.freshLabel();
-        String ret = "";
+        String ret = "//ComparisonNode\n";
         switch (op) {
             case ">":
                 ret += left.codeGeneration() +

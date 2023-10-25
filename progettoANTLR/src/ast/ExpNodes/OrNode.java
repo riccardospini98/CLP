@@ -35,9 +35,9 @@ public class OrNode implements Node {
         if ((leftOp instanceof BoolType) && (rightOp instanceof BoolType))
             return new BoolType();
         else {
-            System.out.println("Type Error: incompatible types in op expression");
+            System.err.println("[X] ERROR-TypeError:  incompatible types in op expression");
             ErrorType err = new ErrorType();
-            err.setMessage("Type Error: incompatible types in op expression");
+            err.setMessage("[X] ERROR-TypeError:  incompatible types in op expression");
             return  err;
         }
     }
@@ -47,7 +47,7 @@ public class OrNode implements Node {
         String ltrue = SimpLanlib.freshLabel();
         String lend = SimpLanlib.freshLabel();
         String leq = SimpLanlib.freshLabel();
-        return left.codeGeneration() +
+        return "//OrNode\n"+left.codeGeneration() +
                 "pushr A0 \n" +
                 right.codeGeneration() +
                 "popr T1 \n" +

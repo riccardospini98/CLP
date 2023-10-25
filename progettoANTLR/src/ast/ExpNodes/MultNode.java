@@ -33,16 +33,16 @@ public class MultNode implements Node {
 		if ((left.typeCheck() instanceof IntType) && (right.typeCheck() instanceof IntType) )
 		  return new IntType() ;
 		else {
-		  System.out.println("Type Error: Non integers in multiplication") ;
+		  System.err.println("[X] ERROR-TypeError:  Non integers in multiplication") ;
 			ErrorType err = new ErrorType();
-			err.setMessage("Type Error: Non integers in multiplication");
+			err.setMessage("[X] ERROR-TypeError:  Non integers in multiplication");
 			return  err;
 		}
 	}
 
 	@Override
     public String codeGeneration() {
-		return 		left.codeGeneration()
+		return "//MultNode\n"+left.codeGeneration()
 				   + "pushr A0 \n"
 				   + right.codeGeneration()
 				   + "popr T1 \n"

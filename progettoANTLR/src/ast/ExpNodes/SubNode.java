@@ -33,16 +33,16 @@ public class SubNode implements Node {
         if ((left.typeCheck() instanceof IntType) && (right.typeCheck() instanceof IntType))
             return new IntType();
         else {
-            System.out.println("Type Error: Non integers in subtraction");
+            System.err.println("[X] ERROR-TypeError:  Non integers in subtraction");
             ErrorType err = new ErrorType();
-            err.setMessage("Type Error: Non integers in subtraction");
+            err.setMessage("[X] ERROR-TypeError:  Non integers in subtraction");
             return err;
         }
     }
 
     @Override
     public String codeGeneration() {
-        return left.codeGeneration()
+        return "//SubNode\n"+left.codeGeneration()
                 + "pushr A0 \n"
                 + right.codeGeneration()
                 + "popr T1 \n"

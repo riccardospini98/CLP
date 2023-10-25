@@ -6,22 +6,43 @@ import ast.Types.Type;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 public class SymbolTable {
 	private ArrayList<HashMap<String,STentry>>  symbol_table ;
 	private ArrayList<Integer> offset;
+
+	private ArrayList<SemanticError> errors;
 	
 	public SymbolTable() {
 		symbol_table = new ArrayList<HashMap<String,STentry>>() ;
 		offset = new ArrayList<Integer>() ;
+		errors = new ArrayList<SemanticError>();
 	}
 	
-	public Integer nesting() {
-		return symbol_table.size() -1 ;
-	}
+	public Integer getNesting(String id) {
+		int n = symbol_table.size()-1;
+		boolean found = false;
 
-	//TODO: setInit(id) setta id nella symbol table (magari specificando lvl nesting) con init=true;
+		while (n>0 && !found) {
+			HashMap<String, STentry> x = symbol_table.get(n);
+
+			if(find(id).getOffset() == -1) {
+				//contains
+				if(x.containsKey(id)) {
+					found = true;
+				} else n-=1;
+			} else {
+				if(x.containsKey(id)) {
+					found = true;
+				} else n-=1;
+			}
+
+
+		}
+		return n;
+	}
 
 	public STentry lookup(String id, boolean declaring, boolean initializing) {
 		int n = symbol_table.size() - 1 ;
@@ -39,11 +60,15 @@ public class SymbolTable {
 		}
 
 		if (!found && !declaring) {
-			System.out.println("[X] ERROR: Symbol "+ id + " must be declared before use");
+			SemanticError err = new SemanticError("[X] ERROR-SemanticError:\n\t Symbol "+ id + " must be declared before use");
+			System.err.println(err);
+			errors.add(err);
 		}
 
 		if (found && !initializing && !declaring && !T.isInitialized()) {
-			System.out.println("[X] ERROR: Symbol "+ id + " must be initialized before use");
+			SemanticError err = new SemanticError("[X] ERROR-SemanticError:\n\t Symbol "+ id + " must be initialized before use");
+			System.err.println(err);
+			errors.add(err);
 		}
 		return T ;
 	}
@@ -83,6 +108,20 @@ public class SymbolTable {
 			offs = offs + 1 ;
 		else offs = offs + 1 ;
 		offset.add(offs) ;	
+	}
+
+	public STentry find(String id) {
+		int n = symbol_table.size()-1;
+		boolean found = false;
+		STentry result = null;
+		while (n>-1 && !found) {
+			HashMap<String, STentry> x = symbol_table.get(n);
+			if(x.get(id) != null) {
+				found = true;
+				result = x.get(id);
+			} else n-=1;
+		}
+		return result;
 	}
 
 	public void increaseOffset() {
@@ -178,5 +217,9 @@ public class SymbolTable {
  		}
 			else System.out.println("[]");
 		}
+	}
+
+	public ArrayList<SemanticError> getErrors() {
+		return errors;
 	}
 }

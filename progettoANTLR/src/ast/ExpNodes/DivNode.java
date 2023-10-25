@@ -33,16 +33,16 @@ public class DivNode implements Node {
         if ((left.typeCheck() instanceof IntType) && (right.typeCheck() instanceof IntType))
             return new IntType();
         else {
-            System.out.println("Type Error: Non integers in division");
+            System.err.println("[X] ERROR-TypeError:  Non integers in division");
             ErrorType err = new ErrorType();
-            err.setMessage("Type Error: Non integers in division");
+            err.setMessage("[X] ERROR-TypeError:  Non integers in division");
             return err;
         }
     }
 
     @Override
     public String codeGeneration() {
-        return left.codeGeneration()
+        return "//DivNode\n"+left.codeGeneration()
                 + "pushr A0 \n"
                 + right.codeGeneration()
                 + "popr T1 \n"

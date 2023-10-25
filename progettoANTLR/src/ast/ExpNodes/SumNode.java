@@ -33,9 +33,9 @@ public class SumNode implements Node {
 		  if ((left.typeCheck() instanceof IntType) && (right.typeCheck() instanceof IntType) )
 			  return new IntType() ;
 		  else {
-			  System.out.println("Type Error: Non integers in addition") ;
+			  System.err.println("[X] ERROR-TypeError:  Non integers in addition") ;
 			  ErrorType err = new ErrorType();
-			  err.setMessage("Type Error: Non integers in addition");
+			  err.setMessage("[X] ERROR-TypeError:  Non integers in addition");
 			  return  err;
 		  }
 	}
@@ -43,7 +43,7 @@ public class SumNode implements Node {
 
 	@Override
 	public String codeGeneration() {
-		return left.codeGeneration()+
+		return "//SumNode\n"+left.codeGeneration()+
 			   "pushr A0 \n" +
 			   right.codeGeneration()+
 			   "popr T1 \n" +

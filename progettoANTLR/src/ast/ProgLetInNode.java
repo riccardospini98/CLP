@@ -79,13 +79,18 @@ public class ProgLetInNode implements Node {
     @Override
     public String codeGeneration() {
         String declCode = "";
-        for (Node d : dec)
+        String stmCode = "";
+        for (Node d: dec)
             declCode += d.codeGeneration();
-        return "move SP FP  \n"
+        for (Node s: stm)
+            stmCode += s.codeGeneration();
+
+        return "//ProgLetIn\nmove SP FP  \n"
                 + "pushr FP \n"
                 + "move SP AL \n"
                 + "pushr AL \n"
                 + declCode
+                + stmCode
                 + exp.codeGeneration()
                 + "halt\n" +
                 SimpLanlib.getCode();

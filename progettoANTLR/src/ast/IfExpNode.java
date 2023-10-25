@@ -52,7 +52,7 @@ public class IfExpNode implements Node {
         try {
             ST.mergeSymbolTable(intersect);
         } catch (Exception e) {
-            System.out.println("Error Merging ST....");
+            System.err.println("Error Merging ST....");
             throw new RuntimeException(e);
         }
 
@@ -77,15 +77,15 @@ public class IfExpNode implements Node {
             if (thenExpType.getClass().equals(elseExpType.getClass()))
                 return thenExpType;
             else {
-                System.out.println("Type Error: incompatible types in then and else branches");
+                System.err.println("[X] ERROR-TypeError:  incompatible types in then and else branches");
                 ErrorType err = new ErrorType();
-                err.setMessage("Type Error: incompatible types in then and else branches");
+                err.setMessage("[X] ERROR-TypeError:  incompatible types in then and else branches");
                 return err;
             }
         } else {
-            System.out.println("Type Error: non boolean condition in if");
+            System.err.println("[X] ERROR-TypeError:  non boolean condition in if");
             ErrorType err = new ErrorType();
-            err.setMessage("Type Error: non boolean condition in if");
+            err.setMessage("[X] ERROR-TypeError:  non boolean condition in if");
             return err;
         }
     }
@@ -105,7 +105,7 @@ public class IfExpNode implements Node {
             elsecode += elseC.codeGeneration();
         }
 
-        return guard.codeGeneration() +
+        return "//IfExp\n"+guard.codeGeneration() +
                 "storei T1 1 \n" +
                 "beq A0 T1 " + labelthen + "\n" +
                 elsecode + elseExp.codeGeneration() +

@@ -95,7 +95,7 @@ public class BodyNode implements Node {
             expCode += exp.codeGeneration();
         }
 
-        return "move SP FP  \n"
+        return "//BodyNode\nmove SP FP  \n"
                 + "pushr FP \n"
                 + "move SP AL \n"
                 + "pushr AL \n"
