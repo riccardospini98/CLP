@@ -56,20 +56,16 @@ public class Main {
         System.out.println("Parse completed with no errors!\nStarting semantic check...");
 
         // Creazione della tabella dei simboli
-        SymbolTable ST = new SymbolTable();
+        ArrayList<SemanticError> STErrors = new ArrayList<>();
+        SymbolTable ST = new SymbolTable(STErrors);
         ArrayList<SemanticError> SErrors = AST.checkSemantics(ST, 0);
-        ArrayList<SemanticError> STErrors = ST.getErrors();
         ArrayList<SemanticError> errors = new ArrayList<>();
-        System.out.println(SErrors + " " + STErrors);
         if (!SErrors.isEmpty()) {
             errors.addAll(SErrors);
-            System.out.println("OOOOOOOOOOOOO");
         }
         if (!STErrors.isEmpty()) {
             errors.addAll(STErrors);
-            System.out.println("YYYYYYYYYYYY");
         }
-
 
         //Errori semantici sugli identificatori
         if(!errors.isEmpty()) {
@@ -77,8 +73,8 @@ public class Main {
             String semanticErrors ="";
 
             for (SemanticError err: errors) {
-                semanticErrors += "[X] ERROR-SemanticError: " + err + "\n";
-                System.err.println("[X] ERROR-SemanticError: " + err + "\n");
+                semanticErrors += err + "\n";
+                System.err.println(err + "\n");
 
                 try {
                     BufferedWriter wr = new BufferedWriter(new FileWriter(OUTPUT_PATH));

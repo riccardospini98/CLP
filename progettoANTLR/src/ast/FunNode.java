@@ -60,7 +60,7 @@ public class FunNode implements Node {
 
             ST.insert(id, type, nesting, flabel, true);
         }
-        return errors; // problemi con la generazione di codice!
+        return errors;
     }
 
     @Override

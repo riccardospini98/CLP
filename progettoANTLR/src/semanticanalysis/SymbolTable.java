@@ -15,10 +15,10 @@ public class SymbolTable {
 
 	private ArrayList<SemanticError> errors;
 	
-	public SymbolTable() {
+	public SymbolTable(ArrayList<SemanticError> errors) {
 		symbol_table = new ArrayList<HashMap<String,STentry>>() ;
 		offset = new ArrayList<Integer>() ;
-		errors = new ArrayList<SemanticError>();
+		this.errors = errors;
 	}
 	
 	public Integer getNesting(String id) {
@@ -61,13 +61,11 @@ public class SymbolTable {
 
 		if (!found && !declaring) {
 			SemanticError err = new SemanticError("[X] ERROR-SemanticError:\n\t Symbol "+ id + " must be declared before use");
-			System.err.println(err);
 			errors.add(err);
 		}
 
 		if (found && !initializing && !declaring && !T.isInitialized()) {
 			SemanticError err = new SemanticError("[X] ERROR-SemanticError:\n\t Symbol "+ id + " must be initialized before use");
-			System.err.println(err);
 			errors.add(err);
 		}
 		return T ;
@@ -133,7 +131,7 @@ public class SymbolTable {
 	}
 
 	public SymbolTable saveSymbolTable() {
-		SymbolTable newST = new SymbolTable();
+		SymbolTable newST = new SymbolTable(errors);
 		ArrayList<HashMap<String, STentry>> hashMapNewST = new ArrayList<>();
 		ArrayList<Integer> offsetNewST = new ArrayList<>();
 

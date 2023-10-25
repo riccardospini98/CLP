@@ -80,10 +80,14 @@ public class ProgLetInNode implements Node {
     public String codeGeneration() {
         String declCode = "";
         String stmCode = "";
+        String expCode = "";
         for (Node d: dec)
             declCode += d.codeGeneration();
-        for (Node s: stm)
-            stmCode += s.codeGeneration();
+        if(stm!=null){
+            for (Node s: stm)
+                stmCode += s.codeGeneration();
+        }
+        if (exp!=null) expCode = exp.codeGeneration();
 
         return "//ProgLetIn\nmove SP FP  \n"
                 + "pushr FP \n"
@@ -91,9 +95,9 @@ public class ProgLetInNode implements Node {
                 + "pushr AL \n"
                 + declCode
                 + stmCode
-                + exp.codeGeneration()
-                + "halt\n" +
-                SimpLanlib.getCode();
+                + expCode
+                + "halt\n"
+                + SimpLanlib.getCode();
     }
 
     @Override
