@@ -20,8 +20,8 @@ public class SVMVisitor extends SVMBaseVisitor<Void> {
     public Void visitAssembly(SVMParser.AssemblyContext ctx) {
         visitChildren(ctx);
 
-        printlabeladd() ; 			// checks
-        printlabelref() ; 			// checks
+        //printlabeladd() ; 			// checks
+        //printlabelref() ; 			// checks
 
         for (Integer refAdd : labelRef.keySet()) {
             int tmp = refAdd ;

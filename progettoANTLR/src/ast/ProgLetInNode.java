@@ -96,7 +96,7 @@ public class ProgLetInNode implements Node {
                 + declCode
                 + stmCode
                 + expCode
-                + "halt\n"
+                + "halt\n//EndProgLetInNode\n"
                 + SimpLanlib.getCode();
     }
 

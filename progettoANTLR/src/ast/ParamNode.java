@@ -32,7 +32,7 @@ public class ParamNode implements Node {
         if (ST.top_lookup(id)) //controllo se esiste già un parametro con questo nome
             errors.add(new SemanticError("Parameter id " + id + " already declared")); //se si errore
         else
-            ST.insert(id, type, nesting, "", true); //TODO: check se va bene false, se no aggiungo il nuovo parametro nell'ultimo ambiente della ST
+            ST.insert(id, type, nesting, "", true);
         return errors;
     }
 

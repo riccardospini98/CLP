@@ -116,7 +116,7 @@ public class CompNode implements Node {
                         "storei A0 1\n" +
                         lend + ":\n";
         }
-        return ret + " //EndCompExpNode \n";
+        return ret + "//EndCompExpNode \n";
     }
 
     @Override

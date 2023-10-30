@@ -42,12 +42,14 @@ public class SubNode implements Node {
 
     @Override
     public String codeGeneration() {
-        return "//SubNode\n"+left.codeGeneration()
+        return "//SubNode\n"
+                + left.codeGeneration()
                 + "pushr A0 \n"
                 + right.codeGeneration()
                 + "popr T1 \n"
                 + "sub T1 A0 \n"
-                + "popr A0 \n";
+                + "popr A0 \n"
+                + "//EndSubNode\n";
     }
 
     @Override

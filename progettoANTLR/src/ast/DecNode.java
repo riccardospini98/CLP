@@ -35,7 +35,7 @@ public class DecNode implements Node {
 
     @Override
     public String codeGeneration() {
-        return "//DecNode\nsubi SP 1 \n";
+        return "//DecNode\npush 0 \n//EndDecNode\n";
     }
 
     @Override

@@ -26,7 +26,7 @@ public class IntNode implements Node {
 
 	@Override
 	public String codeGeneration() {
-		return "//IntNode\nstorei A0 "+val+"\n";
+		return "//IntNode\nstorei A0 "+val+"\n//endIntNode\n";
 	}
 
 	@Override

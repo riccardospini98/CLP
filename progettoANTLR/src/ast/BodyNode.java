@@ -29,7 +29,7 @@ public class BodyNode implements Node {
 
     @Override
     public ArrayList<SemanticError> checkSemantics(SymbolTable ST, int _nesting) {
-        nesting = _nesting + 1;
+        nesting = _nesting;
         HashMap<String, STentry> H = new HashMap<String, STentry>();
         ST.add(H);
 
@@ -95,18 +95,20 @@ public class BodyNode implements Node {
             expCode += exp.codeGeneration();
         }
 
-        return "//BodyNode\nmove SP FP  \n"
-                + "pushr FP \n"
-                + "move SP AL \n"
-                + "pushr AL \n"
+        return "//BodyNode\n"
+                //+ "move SP FP  \n"
+                //+ "pushr FP \n"
+                //+ "move SP AL \n"
+                //+ "pushr AL \n"
                 + decCode
                 + stmCode
                 + expCode
                 + "addi SP " + (decs != null ? decs.size() : 0) + "\n"
-                + "pop"
-                + "popr FP"
-                + "move FP AL"
-                + "subi AL 1";
+                //+ "pop\n"
+                //+ "popr FP\n"
+                //+ "move FP AL\n"
+                //+ "subi AL 1\n"
+                + "//EndBodyNode\n";
 
     }
 

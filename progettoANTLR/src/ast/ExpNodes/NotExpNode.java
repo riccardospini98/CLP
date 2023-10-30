@@ -49,7 +49,8 @@ public class NotExpNode implements Node {
                 ltrue + ":\n" +
                 //Se sono uguali allora ho 1 e 1 allora metto 0 in A0
                 "storei A0 0 \n" +
-                lend + ":\n";
+                lend + ":\n"
+                + "//EndNotExpNode\n";
 
     }
 

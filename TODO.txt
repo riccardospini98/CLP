@@ -1,0 +1,6 @@
+int x;
+int f(int n) {
+	x+n //si deve rmopere per non assegnato?
+}
+x=0
+f(2)

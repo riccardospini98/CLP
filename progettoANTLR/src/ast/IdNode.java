@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class IdNode implements Node {
 	private String id ;
-	private STentry type ;
+	private STentry entry ;
 	private int nesting ;
   
 	public IdNode (String _id) {
@@ -26,36 +26,37 @@ public class IdNode implements Node {
 		STentry st_type = ST.lookup(id, false, false) ;
 		if (st_type == null)
 			errors.add(new SemanticError("Id " + id + " not initialized"));
-		else type = st_type ;
+		else entry = st_type ;
 
 		return errors;
 	}
 
 	@Override
 	public Type typeCheck () {
-		if (type.getType() instanceof ArrowType) { //
+		if (entry.getType() instanceof ArrowType) { //
 			System.err.println("[X] ERROR-TypeError:  Wrong usage of function identifier");
 			ErrorType err = new ErrorType();
 			err.setMessage("[X] ERROR-TypeError:  Wrong usage of function identifier");
 			return  err;
-		} else return type.getType() ;
+		} else return entry.getType() ;
 	}
 
 	@Override
 	public String codeGeneration() {
 		String getAR="";
-		for (int i = 0; i < nesting - type.getNesting(); i++)
-	    	 getAR += "store T1 0(T1) \n";
+		for (int i = 0; i < nesting - entry.getNesting(); i++)
+	    	 getAR += "store T1 0(T1) //searching " + id+" at nesting "+nesting+"-"+entry.getNesting()+"\n";
 	    return 
 		       "//IDNode\nmove AL T1 \n"
 		       + getAR  //risalgo la catena statica
-		       + "subi T1 " + type.getOffset() +"\n" //metto offset sullo stack
-			   + "store A0 0(T1) \n" ; //carico sullo stack il valore all'indirizzo ottenuto
+		       + "subi T1 " + entry.getOffset() +"\n" //metto offset sullo stack
+			   + "store A0 0(T1) \n"  //carico sullo stack il valore all'indirizzo ottenuto
+				+ "//EndIDNode\n";
 	}
 
 	@Override
 	public String toPrint(String s) {
-		return s+"Id:" + id + " at nestlev " + type.getNesting() +"\n" ;
+		return s+"Id:" + id + " at nesting lvl " + entry.getNesting() +"\n" ;
 	}
   
 }  

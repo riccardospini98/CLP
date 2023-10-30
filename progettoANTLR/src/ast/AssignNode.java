@@ -67,7 +67,8 @@ public class AssignNode implements Node {
                 + "move AL T1 \n"
                 + getAR  //risalgo la catena statica
                 + "subi T1 " + offset + "\n" //metto offset sullo stack
-                + "load A0 0(T1) \n";
+                + "load A0 0(T1) \n"
+                + "//EndAssignNode\n";
     }
 
     public String toPrint(String s) {

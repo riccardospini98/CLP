@@ -90,8 +90,10 @@ public class Main {
 
         System.out.println("Checking type errors...");
         Node type = AST.typeCheck();
-        if (type instanceof ErrorType)
+        if (type instanceof ErrorType) {
             System.err.println("[X] ERROR: Type checking is WRONG!\n\t" + ((ErrorType) type).getMessage());
+            return;
+        }
         else
             System.out.println(type.toPrint("Type checking ok! Type of the program is: "));
 

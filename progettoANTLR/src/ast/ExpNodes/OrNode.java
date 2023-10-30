@@ -47,7 +47,8 @@ public class OrNode implements Node {
         String ltrue = SimpLanlib.freshLabel();
         String lend = SimpLanlib.freshLabel();
         String leq = SimpLanlib.freshLabel();
-        return "//OrNode\n"+left.codeGeneration() +
+        return "//OrNode\n" +
+                left.codeGeneration() +
                 "pushr A0 \n" +
                 right.codeGeneration() +
                 "popr T1 \n" +
@@ -59,7 +60,8 @@ public class OrNode implements Node {
                 "storei A0 1 \n" +
                 "beq T1 A0 " + leq + "\n" +
                 "storei A0 0 \n" +
-                lend + ":\n";
+                lend + ":\n" +
+                "//EndOrNode\n";
     }
 
     @Override

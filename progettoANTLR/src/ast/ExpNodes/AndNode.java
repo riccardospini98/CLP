@@ -59,7 +59,8 @@ public class AndNode implements Node {
                 "storei A0 0 \n" +
                 "beq T1 A0 " + leq + "\n" +
                 "storei A0 1 \n" +
-                lend + ":\n";
+                lend + ":\n"
+                + "//EndAndNode\n";
 }
 
     @Override

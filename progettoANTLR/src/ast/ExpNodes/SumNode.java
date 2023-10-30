@@ -48,7 +48,8 @@ public class SumNode implements Node {
 			   right.codeGeneration()+
 			   "popr T1 \n" +
 			   "add A0 T1 \n" +
-			   "popr A0 \n" ;
+			   "popr A0 \n" +
+				"//EndSumNode\n";
 	}
 
 	@Override

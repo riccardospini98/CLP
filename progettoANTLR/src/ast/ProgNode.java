@@ -25,7 +25,7 @@ public class ProgNode implements Node {
 
     @Override
     public String codeGeneration() {
-        return "//Prog\n"+exp.codeGeneration() + "halt\n";
+        return "//Prog\n"+exp.codeGeneration() + "halt\n//EndProg";
     }
 
     @Override

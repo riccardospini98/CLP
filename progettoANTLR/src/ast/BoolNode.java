@@ -27,7 +27,7 @@ public class BoolNode implements Node {
 
     @Override
     public String codeGeneration() {
-        return "//BoolNode\nstorei A0 " + (val ? 1 : 0) + "\n";
+        return "//BoolNode\nstorei A0 " + (val ? 1 : 0) + "\n//EndBoolNode\n";
     }
 
     @Override

@@ -47,7 +47,8 @@ public class DivNode implements Node {
                 + right.codeGeneration()
                 + "popr T1 \n"
                 + "div T1 A0 \n"
-                + "popr A0 \n";
+                + "popr A0 \n"
+                + "//EndDivNode\n";
     }
 
     @Override

@@ -43,7 +43,7 @@ public class CallNode implements Node {
             if (_partype.size() != parameters.size()) {
                 System.err.println("[X] ERROR: Wrong number of parameters in the invocation of " + id);
                 ErrorType err = new ErrorType();
-                err.setMessage("[X] ERROR: Wrong number of parameters in the invocation of " + id);
+                err.setMessage("[X] ERROR: Wrong number of parameters in the invocation of " + id + "\n");
                 return err;
             } else {
                 boolean ok = true;
@@ -91,7 +91,8 @@ public class CallNode implements Node {
                 + parCode                // calcolo i parametri attuali con l'access link del chiamante
                 + "move FP AL \n"
                 + "subi AL 1 \n"
-                + "jsub " + entry.getLabel() + "\n";
+                + "jsub " + entry.getLabel() + "\n"
+                + "//EndCallNode\n";
     }
 
     @Override

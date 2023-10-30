@@ -112,7 +112,8 @@ public class IfExpNode implements Node {
                 "b " + labelend + "\n" +
                 labelthen + ":\n" +
                 thencode + thenExp.codeGeneration() +
-                labelend + ":\n";
+                labelend + ":\n"
+                + "//EndIfExpNode\n";
     }
 
     @Override

@@ -106,7 +106,8 @@ public class IfStmNode implements Node {
                 "b " + labelend + "\n" +
                 labelthen + ":\n" +
                 thencode +
-                labelend + ":\n";
+                labelend + ":\n"
+                + "//EndIfStmNode\n";
     }
 
 

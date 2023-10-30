@@ -38,28 +38,31 @@ public class FunNode implements Node {
             errors.add(new SemanticError("Function identifier " + id + " already declared"));
         else {
             HashMap<String, STentry> HM = new HashMap<String, STentry>();
-            ArrayList<Type> partypes = new ArrayList<Type>();
+            ArrayList<Type> parTypes = new ArrayList<Type>();
+
+            for (ParamNode arg : parlist) {
+                parTypes.add(arg.getType());
+            }
+            type = new ArrowType(parTypes, returntype);
+
+            flabel = SimpLanlib.freshFunLabel();
+
+            ST.insert(id, type, nesting, flabel, true);
 
             ST.add(HM);
 
             for (ParamNode arg : parlist) {
-                partypes.add(arg.getType());
                 if (ST.top_lookup(arg.getId()))
                     errors.add(new SemanticError("Parameter id " + arg.getId() + " already declared"));
                 else ST.insert(arg.getId(), arg.getType(), nesting + 1, "", true);
             }
 
-            type = new ArrowType(partypes, returntype);
 
             ST.increaseOffset(); // aumentiamo di 1 l'offset per far posto al return value
 
             errors.addAll(body.checkSemantics(ST, nesting + 1));
             ST.remove();
-
-            flabel = SimpLanlib.freshFunLabel();
-
-            ST.insert(id, type, nesting, flabel, true);
-        }
+            }
         return errors;
     }
 
@@ -79,7 +82,7 @@ public class FunNode implements Node {
     @Override
     public String codeGeneration() {
 
-        SimpLanlib.putCode("//FunNode\n"+flabel + ":\n"
+        SimpLanlib.putCode(flabel +": //FunNode\n"
                 + "pushr RA \n"
                 + body.codeGeneration()
                 + "popr RA \n"
@@ -89,7 +92,7 @@ public class FunNode implements Node {
                 + "move FP AL \n"
                 + "subi AL 1 \n"
                 + "pop \n"
-                + "rsub RA \n"
+                + "rsub RA //EndFunNode\n"
         );
 
         return "push " + flabel + "\n";
