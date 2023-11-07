@@ -14,8 +14,8 @@ public class AssignNode implements Node {
     private Type type;
     private Node exp;
     private int nesting;
-    private int offset;
-    private int nestingNode;
+
+    private STentry entry;
 
     public AssignNode(String _id, Node _exp) {
         id = _id;
@@ -26,17 +26,22 @@ public class AssignNode implements Node {
     public ArrayList<SemanticError> checkSemantics(SymbolTable ST, int _nesting) {
         ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
         nesting = _nesting;
-        nestingNode = ST.getNesting(id);
-        offset = ST.find(id).getOffset();
+        STentry tmpEntry = ST.find(id);
+        if (tmpEntry == null) {
+            errors.add(new SemanticError("\tSymbol \""+ id + "\n must be declared before use"));
+            return errors;
+        }
 
         errors.addAll(exp.checkSemantics(ST, nesting));
 
         try {
             STentry entry = ST.lookup(id, false, true);
             if(entry == null)
-                errors.add(new SemanticError("ID \"" + id + "\" used but not declared"));
-            else
+                errors.add(new SemanticError("\tID \"" + id + "\" used but not declared"));
+            else {
                 type = entry.getType();
+                this.entry = entry;
+            }
             } catch (Exception e) {
             errors.add(new SemanticError(e.getMessage()));
         }
@@ -59,14 +64,14 @@ public class AssignNode implements Node {
     @Override
     public String codeGeneration() {
         String getAR="";
-        for (int i = 0; i < nesting - nestingNode; i++)
+        for (int i = 0; i < nesting - entry.getNesting(); i++)
             getAR += "store T1 0(T1) \n";
 
         return "//AssignNode\n"
                 + exp.codeGeneration()
                 + "move AL T1 \n"
                 + getAR  //risalgo la catena statica
-                + "subi T1 " + offset + "\n" //metto offset sullo stack
+                + "subi T1 " + entry.getOffset()+ "\n" //metto offset sullo stack
                 + "load A0 0(T1) \n"
                 + "//EndAssignNode\n";
     }

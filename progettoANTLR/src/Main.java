@@ -53,7 +53,7 @@ public class Main {
             errorListener.writeOnFile(OUTPUT_PATH);
             return;
         }
-        System.out.println("Parse completed with no errors!\nStarting semantic check...");
+        System.out.println("Parsing ended successfully!");
 
         // Creazione della tabella dei simboli
         ArrayList<SemanticError> STErrors = new ArrayList<>();
@@ -68,24 +68,23 @@ public class Main {
         }
 
         //Errori semantici sugli identificatori
-        if(!errors.isEmpty()) {
-            System.err.println("The semantic check found "+ errors.size() +" errors.");
-            String semanticErrors ="";
+        if (!errors.isEmpty()) {
+            System.err.println("The semantic check found " + errors.size() + " errors.");
+            String semanticErrors = "[X] ERROR-SemanticError:\n";
 
-            for (SemanticError err: errors) {
+            for (SemanticError err : errors) {
                 semanticErrors += err + "\n";
-                System.err.println(err + "\n");
-
-                try {
-                    BufferedWriter wr = new BufferedWriter(new FileWriter(OUTPUT_PATH));
-                    wr.write(semanticErrors);
-                    wr.flush();
-                    wr.close();
-                } catch (IOException e) {
-                    System.err.println("Exception while writing on output file: " + e);
-                }
-                System.exit(1);
+                System.err.println(err);
             }
+            try {
+                BufferedWriter wr = new BufferedWriter(new FileWriter(OUTPUT_PATH));
+                wr.write(semanticErrors);
+                wr.flush();
+                wr.close();
+            } catch (IOException e) {
+                System.err.println("Exception while writing on output file: " + e);
+            }
+            System.exit(1);
         }
 
         System.out.println("Checking type errors...");
@@ -93,8 +92,7 @@ public class Main {
         if (type instanceof ErrorType) {
             System.err.println("[X] ERROR: Type checking is WRONG!\n\t" + ((ErrorType) type).getMessage());
             return;
-        }
-        else
+        } else
             System.out.println(type.toPrint("Type checking ok! Type of the program is: "));
 
         if (!parserErrors.isEmpty()) {
@@ -106,7 +104,7 @@ public class Main {
                 f.createNewFile();
             }
 
-            System.err.println("[X] ERROR: Found"+ parserErrors.size() +" parser errors.\n\tCheck output file for additional information. ");
+            System.err.println("[X] ERROR: Found" + parserErrors.size() + " parser errors.\n\tCheck output file for additional information. ");
 
             for (String error : parserErrors) {
                 Files.write(Paths.get(OUTPUT_PATH), (error + "\n").getBytes(), StandardOpenOption.APPEND);
@@ -117,13 +115,13 @@ public class Main {
         }
 
         // CODE GENERATION  input.simplanplus.asm
-        String code=AST.codeGeneration();
-        BufferedWriter out = new BufferedWriter(new FileWriter(INPUT_PATH+".asm"));
+        String code = AST.codeGeneration();
+        BufferedWriter out = new BufferedWriter(new FileWriter(INPUT_PATH + ".asm"));
         out.write(code);
         out.close();
         System.out.println("Code generated! Assembling and running generated code.");
 
-        FileInputStream isASM = new FileInputStream(INPUT_PATH+".asm");
+        FileInputStream isASM = new FileInputStream(INPUT_PATH + ".asm");
         ANTLRInputStream inputASM = new ANTLRInputStream(isASM);
         SVMLexer lexerASM = new SVMLexer(inputASM);
         CommonTokenStream tokensASM = new CommonTokenStream(lexerASM);

@@ -31,7 +31,6 @@ public class BodyNode implements Node {
     public ArrayList<SemanticError> checkSemantics(SymbolTable ST, int _nesting) {
         nesting = _nesting;
         HashMap<String, STentry> H = new HashMap<String, STentry>();
-        ST.add(H);
 
         ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
 
@@ -50,9 +49,6 @@ public class BodyNode implements Node {
         if (exp != null) {
             errors.addAll(exp.checkSemantics(ST, nesting));
         }
-
-        ST.remove();
-
         return errors;
     }
 

@@ -14,7 +14,6 @@ public class Visitor extends SimpLanPlusBaseVisitor<Node>{
     **/
     @Override
     public Node visitSingleExpProg(SimpLanPlusParser.SingleExpProgContext ctx) {
-        System.out.println("SEP");
         return new ProgNode(visit(ctx.exp()));
     }
     /**
@@ -22,7 +21,6 @@ public class Visitor extends SimpLanPlusBaseVisitor<Node>{
     **/
     @Override
     public Node visitRegularProg(SimpLanPlusParser.RegularProgContext ctx) {
-        System.out.println("RP");
         ArrayList<Node> declarations = new ArrayList<>();
         ArrayList<Node> statements = new ArrayList<>();
         for (SimpLanPlusParser.DecContext dec: ctx.dec()) {
@@ -44,7 +42,6 @@ public class Visitor extends SimpLanPlusBaseVisitor<Node>{
     **/
     @Override
     public Node visitVarDec(SimpLanPlusParser.VarDecContext ctx) {
-        System.out.println("DEC");
         return new DecNode(ctx.ID().getText(), (Type) visit( ctx.type() ));
     }
 
@@ -53,7 +50,6 @@ public class Visitor extends SimpLanPlusBaseVisitor<Node>{
      **/
     @Override
     public Node visitFunDec(SimpLanPlusParser.FunDecContext ctx) {
-        System.out.println("F-DEC");
         ArrayList<ParamNode> params = new ArrayList<>();
         for (SimpLanPlusParser.ParamContext p: ctx.param()) {
             params.add(new ParamNode(p.ID().getText(), (Type) visit(p.type())));
@@ -78,7 +74,6 @@ public class Visitor extends SimpLanPlusBaseVisitor<Node>{
      **/
     @Override
     public Node visitBody(SimpLanPlusParser.BodyContext ctx) {
-        System.out.println("BODY");
         ArrayList<Node> declarations = new ArrayList<>();
         ArrayList<Node> statements = new ArrayList<>();
 
@@ -100,7 +95,6 @@ public class Visitor extends SimpLanPlusBaseVisitor<Node>{
      **/
     @Override
     public Node visitType(SimpLanPlusParser.TypeContext ctx) {
-        System.out.println("TYPE");
         return switch (ctx.getText()) {
             case "int" -> new IntType();
             case "bool" -> new BoolType();
@@ -113,7 +107,6 @@ public class Visitor extends SimpLanPlusBaseVisitor<Node>{
      **/
     @Override
     public Node visitAssign(SimpLanPlusParser.AssignContext ctx) {
-        System.out.println("ASGN");
         return new AssignNode(ctx.ID().getText(), visit(ctx.exp()));
     }
 
@@ -122,7 +115,6 @@ public class Visitor extends SimpLanPlusBaseVisitor<Node>{
      **/
     @Override
     public Node visitFunCallVoid(SimpLanPlusParser.FunCallVoidContext ctx) {
-        System.out.println("FUNCALL_V");
         ArrayList<Node> expressions = new ArrayList<>();
         for (SimpLanPlusParser.ExpContext exp: ctx.exp()) {
             expressions.add(visit(exp));
@@ -135,7 +127,6 @@ public class Visitor extends SimpLanPlusBaseVisitor<Node>{
      **/
     @Override
     public Node visitIfStm(SimpLanPlusParser.IfStmContext ctx) {
-        System.out.println("IF_STM");
         ArrayList<Node> thenStm = new ArrayList<>();
         ArrayList<Node> elseStm = new ArrayList<>();
         for (SimpLanPlusParser.StmContext stm: ctx.thenStm().stm()) {
@@ -155,7 +146,6 @@ public class Visitor extends SimpLanPlusBaseVisitor<Node>{
      **/
     @Override
     public Node visitBaseExp(SimpLanPlusParser.BaseExpContext ctx) {
-        System.out.println("BASE_EXP");
         return visit(ctx.exp());
     }
 
@@ -164,7 +154,6 @@ public class Visitor extends SimpLanPlusBaseVisitor<Node>{
      **/
     @Override
     public Node visitIntVal(SimpLanPlusParser.IntValContext ctx) {
-        System.out.println("INT");
         return new IntNode(Integer.parseInt(ctx.INTEGER().getText()));
     }
 
@@ -173,7 +162,6 @@ public class Visitor extends SimpLanPlusBaseVisitor<Node>{
      **/
     @Override
     public Node visitNot(SimpLanPlusParser.NotContext ctx) {
-        System.out.println("NOT");
         return new NotExpNode(visit(ctx.exp()));
     }
 
@@ -182,7 +170,6 @@ public class Visitor extends SimpLanPlusBaseVisitor<Node>{
      **/
     @Override
     public Node visitIfThenElse(SimpLanPlusParser.IfThenElseContext ctx) {
-        System.out.println("ITE");
         ArrayList<Node> thenStm = new ArrayList<Node>() ;
         ArrayList<Node> elseStm = new ArrayList<Node>() ;
 
@@ -201,7 +188,6 @@ public class Visitor extends SimpLanPlusBaseVisitor<Node>{
      **/
     @Override
     public Node visitMulDivExp(SimpLanPlusParser.MulDivExpContext ctx) {
-        System.out.println("MULDIV");
         if (ctx.op.getText().equals("/")) {
             return new DivNode(visit(ctx.left), visit(ctx.right));
         } else {
@@ -213,7 +199,6 @@ public class Visitor extends SimpLanPlusBaseVisitor<Node>{
      **/
     @Override
     public Node visitVar(SimpLanPlusParser.VarContext ctx) {
-        System.out.println("VAR");
         return new IdNode(ctx.ID().getText());
     }
 
@@ -222,7 +207,6 @@ public class Visitor extends SimpLanPlusBaseVisitor<Node>{
      **/
     @Override
     public Node visitComparisonExp(SimpLanPlusParser.ComparisonExpContext ctx) {
-        System.out.println("COMP");
         return new CompNode(ctx.op.getText(), visit(ctx.left), visit(ctx.right));
     }
 
@@ -231,7 +215,6 @@ public class Visitor extends SimpLanPlusBaseVisitor<Node>{
      **/
     @Override
     public Node visitSumSubExp(SimpLanPlusParser.SumSubExpContext ctx) {
-        System.out.println("SUMSUB");
         if(ctx.op.getText().equals("+")) {
             return new SumNode(visit(ctx.left), visit(ctx.right));
         } else {
@@ -244,7 +227,6 @@ public class Visitor extends SimpLanPlusBaseVisitor<Node>{
      **/
     @Override
     public Node visitBoolExp(SimpLanPlusParser.BoolExpContext ctx) {
-        System.out.println("BOOL_E");
         if (ctx.op.getText().equals("&&")) {
             return new AndNode(visit(ctx.left), visit(ctx.right));
         } else {
@@ -258,7 +240,6 @@ public class Visitor extends SimpLanPlusBaseVisitor<Node>{
      */
     @Override
     public Node visitBoolVal(SimpLanPlusParser.BoolValContext ctx) {
-        System.out.println("BOOL");
         return new BoolNode(Boolean.parseBoolean(ctx.getText()));
     }
 
@@ -267,7 +248,6 @@ public class Visitor extends SimpLanPlusBaseVisitor<Node>{
      */
     @Override
     public Node visitFunCallReturn(SimpLanPlusParser.FunCallReturnContext ctx) {
-        System.out.println("FUNCALL_R");
         ArrayList<Node> args = new ArrayList<Node>();
         for (SimpLanPlusParser.ExpContext exp : ctx.exp())
             args.add(visit(exp));

@@ -23,10 +23,10 @@ public class IdNode implements Node {
 		ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
 		nesting = _nesting ;
 		
-		STentry st_type = ST.lookup(id, false, false) ;
-		if (st_type == null)
-			errors.add(new SemanticError("Id " + id + " not initialized"));
-		else entry = st_type ;
+		STentry sTentry = ST.lookup(id, false, false) ;
+		if (sTentry == null)
+			errors.add(new SemanticError("\tId " + id + " not initialized"));
+		else entry = sTentry ;
 
 		return errors;
 	}
@@ -43,6 +43,7 @@ public class IdNode implements Node {
 
 	@Override
 	public String codeGeneration() {
+
 		String getAR="";
 		for (int i = 0; i < nesting - entry.getNesting(); i++)
 	    	 getAR += "store T1 0(T1) //searching " + id+" at nesting "+nesting+"-"+entry.getNesting()+"\n";

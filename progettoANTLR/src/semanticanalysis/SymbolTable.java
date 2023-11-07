@@ -20,39 +20,24 @@ public class SymbolTable {
 		offset = new ArrayList<Integer>() ;
 		this.errors = errors;
 	}
-	
-	public Integer getNesting(String id) {
-		int n = symbol_table.size()-1;
-		boolean found = false;
-
-		while (n>0 && !found) {
-			HashMap<String, STentry> x = symbol_table.get(n);
-
-			if(find(id).getOffset() == -1) {
-				//contains
-				if(x.containsKey(id)) {
-					found = true;
-				} else n-=1;
-			} else {
-				if(x.containsKey(id)) {
-					found = true;
-				} else n-=1;
-			}
-
-
-		}
-		return n;
-	}
 
 	public STentry lookup(String id, boolean declaring, boolean initializing) {
 		int n = symbol_table.size() - 1 ;
 		boolean found = false ;
 		STentry T = null ;
+		boolean deep = false;
+		boolean warn = false;
 		while ((n >= 0) && !found) {
+			if(deep) {
+				warn = true;
+			}
 			HashMap<String,STentry> H = symbol_table.get(n) ;
 			T = H.get(id) ;
 			if (T != null) found = true ;
 			else n = n-1 ;
+			if (!deep) {
+				deep = true;
+			}
 		}
 
 		if (found && initializing) {
@@ -60,13 +45,19 @@ public class SymbolTable {
 		}
 
 		if (!found && !declaring) {
-			SemanticError err = new SemanticError("[X] ERROR-SemanticError:\n\t Symbol "+ id + " must be declared before use");
+			SemanticError err = new SemanticError("\t Symbol \""+ id + "\" must be declared before use");
 			errors.add(err);
 		}
 
 		if (found && !initializing && !declaring && !T.isInitialized()) {
-			SemanticError err = new SemanticError("[X] ERROR-SemanticError:\n\t Symbol "+ id + " must be initialized before use");
-			errors.add(err);
+			if(!warn) {
+				SemanticError err = new SemanticError("\t Symbol \"" + id + "\" must be initialized before use");
+				errors.add(err);
+			} else {
+				String ANSI_RESET = "\u001B[0m";
+				String ANSI_YELLOW = "\u001B[33m";
+				System.out.println(ANSI_YELLOW +"WARNING -  Symbol \"" + id + "\" could be not initialized when used"+ ANSI_RESET);
+			}
 		}
 		return T ;
 	}

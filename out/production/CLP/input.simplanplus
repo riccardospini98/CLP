@@ -1,6 +1,98 @@
-int n;
-int fact(int x) {
-    x+x
+/*
+//Es 1
+
+int a; int b; int c ; c = 2 ;
+     if (c > 1) { b = c ; } else { a = b ; }
+// ERRORE perche` b e` usata ma non inizializzata
+
+//Es 2
+
+int a; int b; int c ;
+void f(int n){
+    int x ; int y ;
+    if (n > 0) { x = n ;} else { y = n+x ;}
 }
-n = fact(5);  // CORRETTA
-n
+c = 1 ; f(0) ;  // ERRORE perche` x e` usata ma non inizializzata (ramo else)
+
+//Es 3
+
+void h(int n){
+    int x ; int y ;
+    if (n==0){
+        x = n+1 ;
+    }
+    else {
+        h(n-1) ;
+        x = n ;
+        y = x ;
+    }
+}
+h(5) ;  // CORRETTA
+
+//Es 4
+
+int a;
+void h(int n){
+    int x ; int y ;
+    if (n==0){
+        x = n+1 ;
+    }
+    else {
+        h(n-1) ;
+        y = x ;
+    }
+}
+h(5) ;  // ERRORE
+
+//Es 5
+
+int x ;
+void f(int n){
+	// n e` gia` uguale a 0; equivale a fare skip
+	if (n == 0) {
+	    n = 0 ;
+    }
+	else {
+	    x = x * n ;
+	    f(n-1) ;
+    }
+}
+x = 1 ;
+f(10);
+x
+
+//Es 6
+
+int u ;
+int f(int n){
+    int y ;
+    y = 1 ;
+    if (n == 0) {
+        y
+    }
+    else {
+        y = f(n-1) ;
+        y*n
+    }
+}
+u = 6 ;
+f(u)
+
+*/
+//Es 7
+
+int u ;
+void f(int m, int n){
+	int x ;
+	x=u;
+	if (m>n) {
+	    u = m+n ;
+    }
+	else {
+	    x = 1 ;
+	    f(m+1,n+1) ;
+    }
+}
+u=8;
+f(5,4) ; u
+// cosa succede se la invoco con f(4,5)?

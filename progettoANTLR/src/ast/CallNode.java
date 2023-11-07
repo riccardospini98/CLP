@@ -30,7 +30,7 @@ public class CallNode implements Node {
                 errors.addAll(par.checkSemantics(ST, nesting));
             }
         } else {
-            errors.add(new SemanticError("ID \"" + id + "\" used but not declared"));
+            errors.add(new SemanticError("\tID \"" + id + "\" used but not declared"));
         }
         return errors;
     }
