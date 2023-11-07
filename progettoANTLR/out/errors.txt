@@ -1,0 +1,2 @@
+[X] ERROR-SemanticError:
+	 Symbol "u" must be initialized before use

@@ -55,12 +55,7 @@ public class IfStmNode implements Node {
             // non di quella passata come parametro.
             intersect = ST.intersectSymbolTables(thenST);
         }
-        try {
-            ST.mergeSymbolTable(intersect);
-        } catch (Exception e) {
-            System.err.println("Error Merging ST....");
-            throw new RuntimeException(e);
-        }
+        ST.mergeSymbolTable(intersect);
 
         return errors;
     }

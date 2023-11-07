@@ -82,17 +82,15 @@ f(u)
 //Es 7
 
 int u ;
-void f(int m, int n){
-	int x ;
-	x=u;
-	if (m>n) {
-	    u = m+n ;
+int y ;
+void f(){
+	if (true) {
+	    u=y ;
     }
 	else {
-	    x = 1 ;
-	    f(m+1,n+1) ;
-    }
+	     y=y+1 ;
+   }
 }
-u=8;
-f(5,4) ; u
+f() ;
+u
 // cosa succede se la invoco con f(4,5)?

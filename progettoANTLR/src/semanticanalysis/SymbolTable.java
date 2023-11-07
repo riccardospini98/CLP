@@ -64,7 +64,7 @@ public class SymbolTable {
 
 	public void add(HashMap<String,STentry> H) {
 		symbol_table.add(H) ;
-		offset.add(1) ;		// si inizia da 2 perche` prima ci sonop FP e AL
+		offset.add(1) ;		// Prima ci sono FP e AL
 	}
 	
 	public void remove() {
@@ -183,7 +183,7 @@ public class SymbolTable {
 		return intersection;
 	}
 
-	public void mergeSymbolTable(ArrayList<HashMap<String, STentry>> otherST) throws Exception {
+	public void mergeSymbolTable(ArrayList<HashMap<String, STentry>> otherST) {
 		for (HashMap<String, STentry> otherHashMap : otherST) {
 			for (String key : otherHashMap.keySet()) {
 				STentry otherEntry = otherHashMap.get(key);
@@ -192,23 +192,5 @@ public class SymbolTable {
 				toReplace.setInit(otherEntry.isInitialized());
 			}
 		}
-	}
-	public void toPrint(String msg, int nesting){
-		System.out.println("--------------------------------");
-		System.out.println("ST" + nesting + ": " + msg);
-		for(HashMap<String,STentry> h : symbol_table){
-			if(h.size()>0){
-				System.out.println("[");
-				h.forEach((s,st) -> {
-					System.out.println(s+st.toPrint());
-				});
-				System.out.println("]");
- 		}
-			else System.out.println("[]");
-		}
-	}
-
-	public ArrayList<SemanticError> getErrors() {
-		return errors;
 	}
 }

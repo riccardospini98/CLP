@@ -49,12 +49,8 @@ public class IfExpNode implements Node {
         errors.addAll(elseExp.checkSemantics(elseST, _nesting));
 
         ArrayList<HashMap<String, STentry>> intersect = thenST.intersectSymbolTables(elseST);
-        try {
-            ST.mergeSymbolTable(intersect);
-        } catch (Exception e) {
-            System.err.println("Error Merging ST....");
-            throw new RuntimeException(e);
-        }
+
+        ST.mergeSymbolTable(intersect);
 
         return errors;
     }
